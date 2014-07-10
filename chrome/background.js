@@ -209,3 +209,4 @@ define(["common/controller", "common/pgpViewModel", "common/prefs", "openpgp", "
   init();
 
 });
+

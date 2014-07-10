@@ -54,6 +54,7 @@ define(function (require, exports, module) {
       }
       model.setPreferences(prefs);
     }
+
   }
 
   function getVersion() {
