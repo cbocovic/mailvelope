@@ -480,11 +480,27 @@ define(function (require, exports, module) {
       case 'get-prefs':
         mainCsPorts[id].postMessage({event: 'set-prefs', prefs: prefs.data});
         break;
+      case 'get-user-new':
+        //check to see if user has generated keys
+        var user = false;
+        var keys = model.getPrivateKeys();
+        if (keys.length === 0) {
+          var user = true;
+        }
+        mainCsPorts[id].postMessage({event: 'set-user-new', newUser: user});
+        break;
       case 'wframe-display-welcome':
-        alert('got into controller');
-        //mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + id, {width: 742, height: 450, modal: true}, function(window) {
-          //welcomePopup = window;
-        //});
+        console.log('wframe-display-welcome');
+        if (welcomePopup) {
+          // welcome dialog already open
+          //welcomePopup.window.activate(); // focus
+          console.log('welcome window open');
+        } else {
+          //mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + id, {width: 742, height: 450, modal: true}, function(window) {
+            //welcomePopup = window;
+          //});
+          console.log('opening welcome window...');
+        }
         break;
       default:
         console.log('unknown event', msg);
