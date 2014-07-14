@@ -52,6 +52,8 @@ define(function (require, exports, module) {
   var verifyPopup = null;
   // password popup window
   var pwdPopup = null;
+  // welcome popup window
+  var welcomePopup = null;
   // recipients of encrypted mail
   var keyidBuffer = {};
   var scannedHosts = [];
@@ -477,6 +479,12 @@ define(function (require, exports, module) {
         break;
       case 'get-prefs':
         mainCsPorts[id].postMessage({event: 'set-prefs', prefs: prefs.data});
+        break;
+      case 'wframe-display-welcome':
+        alert('got into controller');
+        //mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + id, {width: 742, height: 450, modal: true}, function(window) {
+          //welcomePopup = window;
+        //});
         break;
       default:
         console.log('unknown event', msg);

@@ -3,10 +3,27 @@
 
 define(function (require, exports, module) {
 
+  var mvelo = require('../lib-mvelo').mvelo;
+  var openpgp = require('openpgp');
+  var model = require('./pgpViewModel');
+
+  var newUser = false;
+
   init();
   
   function init() {
-    alert('This is a test. WOOOOO');
+
+    //Check to see if user has already generated keys
+    var keys = model.getPrivateKeys();
+    if(keys.length === 0){
+      newUser = true;
+      alert('Welcome!');
+    }
+    
+  //  this._port.postMessage({
+  //    event: 'wframe-display-welcome',
+  //    sender: 'eFrame-' + this.id,
+  //  });
   }
 
 });
