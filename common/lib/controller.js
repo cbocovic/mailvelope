@@ -23,7 +23,6 @@ define(function (require, exports, module) {
   var prefs = require('./prefs');
   var pwdCache = require('./pwdCache');
   var mailreader = require('mailreader-parser');
-  var setup = require('./setup');
 
   // ports to main content scripts
   var mainCsPorts = {};
