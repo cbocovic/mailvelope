@@ -22,4 +22,6 @@ define(function (require, exports, module) {
     windowPopup.close();
     windowPopup = null;
   }
+
+  exports.closeWelcomeWindow = closeWelcomeWindow;
 });

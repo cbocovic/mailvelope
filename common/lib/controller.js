@@ -486,7 +486,7 @@ define(function (require, exports, module) {
         });
         break;
       case 'get-prefs':
-        console.log('received get-prefs request from'+ id);
+        //console.log('received get-prefs request from'+ id);
         mainCsPorts[id].postMessage({event: 'set-prefs', prefs: prefs.data});
         break;
       case 'get-user-new':
@@ -512,7 +512,6 @@ define(function (require, exports, module) {
         }
         break;*/
       case 'options-page':
-        console.log('opening options page...');
         onBrowserAction('options');
         setup.closeWelcomeWindow();
         break;
@@ -790,7 +789,6 @@ define(function (require, exports, module) {
         removeFromWatchList();
         break;
       case 'options':
-        console.log('Advanced button pressed-received by controller');
         loadOptions('#home');
         break;
       case 'help':
