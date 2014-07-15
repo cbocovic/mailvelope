@@ -51,6 +51,11 @@
   left: 0;
 }
 
+.span1 {
+  height: 10%;
+  width:90%;
+}
+
 #blurWarn {
   opacity: 0;
   position: absolute;
@@ -78,7 +83,7 @@
 }
 
 .welcomeBtn {
-  padding: 4px 4px;
+  padding: 5px 5px 5px 5px;
   margin-bottom: 0;
   -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -87,16 +92,17 @@
 }
 
 #newUserBtn div{ 
+  background-image: url('../../img/mail_locked_96.png'), none;
 }
 
 #newUserBtn {
   float: left;
   height: 80%;
-  width: 40%;
+  width: 47%;
 }
 
 #advancedUserBtn {
   float: right;
   height: 80%;
-  width: 40%;
+  width: 47%;
 }

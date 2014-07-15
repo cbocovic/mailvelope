@@ -44,6 +44,8 @@ define(function (require, exports, module) {
   var pwdPort = null;
   // port to import key frames
   var imFramePorts = {};
+  //port to welcome window
+  var welcomePort = null;
   // editor window
   var editor = null;
   // decrypt popup window
@@ -114,6 +116,9 @@ define(function (require, exports, module) {
       case 'imFrame':
         imFramePorts[sender.id] = port;
         break;
+      case 'welcome':
+        welcomePort = port;
+        break;
       default:
         console.log('unknown port');
     }
@@ -153,6 +158,9 @@ define(function (require, exports, module) {
         break;
       case 'imFrame':
         delete imFramePorts[sender.id];
+        break;
+      case 'welcome':
+        welcomePort = null;
         break;
       default:
         console.log('unknown port');
@@ -490,7 +498,7 @@ define(function (require, exports, module) {
         }
         mainCsPorts[id].postMessage({event: 'set-user-new', newUser: user});
         break;
-      case 'wframe-display-welcome':
+/*      case 'wframe-display-welcome':
         console.log('wframe-display-welcome');
         if (welcomePopup) {
           // welcome dialog already open
@@ -502,6 +510,11 @@ define(function (require, exports, module) {
           //});
           console.log('opening welcome window...');
         }
+        break;*/
+      case 'options-page':
+        console.log('opening options page...');
+        onBrowserAction('options');
+        setup.closeWelcomeWindow();
         break;
       default:
         console.log('unknown event', msg);
@@ -777,6 +790,7 @@ define(function (require, exports, module) {
         removeFromWatchList();
         break;
       case 'options':
+        console.log('Advanced button pressed-received by controller');
         loadOptions('#home');
         break;
       case 'help':

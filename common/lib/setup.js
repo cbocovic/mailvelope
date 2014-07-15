@@ -17,4 +17,9 @@ define(function (require, exports, module) {
       //alert('Welcome to mailvelope!');
     }
   }
+
+  function closeWelcomeWindow() {
+    windowPopup.close();
+    windowPopup = null;
+  }
 });
