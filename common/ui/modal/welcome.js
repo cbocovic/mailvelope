@@ -38,6 +38,8 @@
 
     $('#advancedBtn').click(onAdvanced);
     $('#getStartedBtn').click(onGetStarted);
+
+    $('#infoForm').hide();
     
     //port = mvelo.extension.connect({name: name});
     //port.onMessage.addListener(messageListener);

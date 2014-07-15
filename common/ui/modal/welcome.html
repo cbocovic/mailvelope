@@ -28,6 +28,42 @@
       </div>
       <div id="infoForm" class="info-text">
         <p>Please fill out this form.</p>
+        <form class="form-horizontal well" onsubmit="return false" autocomplete="off">
+          <div class="control-group">
+            <label class="control-label">Name</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge" id="genKeyName">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Email</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge" id="genKeyEmail">
+              <span class="help-inline hide">Invalid email address</span>
+            </div>
+          </div>
+          <div class="control-group">
+            <div id="genAlert">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="genKeySubmit" class="btn btn-primary" disabled>Submit</button>
+            <button id="genKeyClear" class="btn">Clear</button>
+          </div>
+        </form>
+        <div class="modal fade hide" id="genKeyWait">
+          <div class="modal-header">
+            <h3>Key generation in progress...</h3>
+          </div>
+          <div class="modal-body">
+            <div class="progress-bar">
+              <img alt="activity indicator" src="../img/progress-bar.gif">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <p>Please wait, key generation can take up to several minutes depending on factors like the key size.</p>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
