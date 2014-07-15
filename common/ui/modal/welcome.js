@@ -45,13 +45,14 @@
 
   function onGetStarted() {
   //Ask user for information necessary to generate keys
+    //window.location.href="#infoForm";
+    $('.info-text').hide();
+    $('#infoForm').show();
   }
 
   function onAdvanced() {
   //send user to mailvelope generate key page
     port.postMessage({event: 'options-page', sender: name});
-    //hide();
-
   }
 
 
