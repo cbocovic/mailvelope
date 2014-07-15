@@ -19,6 +19,7 @@ define(function (require, exports, module) {
 
   var mvelo = require('../lib-mvelo').mvelo;
   var model = require('./pgpViewModel');
+  var setup = require('./setup');
   var defaults = require('./defaults');
   var prefs = require('./prefs');
   var pwdCache = require('./pwdCache');
@@ -477,6 +478,7 @@ define(function (require, exports, module) {
         });
         break;
       case 'get-prefs':
+        console.log('received get-prefs request from'+ id);
         mainCsPorts[id].postMessage({event: 'set-prefs', prefs: prefs.data});
         break;
       case 'get-user-new':

@@ -1,0 +1,102 @@
+/**
+ * Mailvelope - secure email with OpenPGP encryption for Webmail
+ * Copyright (C) 2012  Thomas Oberndörfer
+ */
+
+
+.m-modal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 10px;
+  background-color: #ffffff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+}
+
+.m-modal > .modal-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.m-modal > .modal-header h3 {
+  float: left;
+}
+
+.m-modal > .modal-body {
+  position: absolute;
+  top: 49px;
+  bottom: 58px;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.m-modal > .modal-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+#blurWarn {
+  opacity: 0;
+  position: absolute;
+  top: 180px;
+  left: 50%;
+  margin-left: -174px;
+}
+
+#secureCode {
+  float: right;
+  padding: 4px 14px;
+  margin-bottom: 0;
+  -webkit-border-radius: 15px;
+     -moz-border-radius: 15px;
+          border-radius: 15px;
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 20px;
+  color: #555555;
+}
+
+.welcomeBtn {
+  padding: 4px 4px;
+  margin-bottom: 0;
+  -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+      border-radius: 4px;
+  vertical-align:middle;
+}
+
+#newUserBtn div{ 
+}
+
+#newUserBtn {
+  float: left;
+  height: 80%;
+  width: 40%;
+}
+
+#advancedUserBtn {
+  float: right;
+  height: 80%;
+  width: 40%;
+}
