@@ -82,27 +82,3 @@
   color: #555555;
 }
 
-.welcomeBtn {
-  padding: 5px 5px 5px 5px;
-  margin-bottom: 0;
-  -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-      border-radius: 4px;
-  vertical-align:middle;
-}
-
-#newUserBtn div{ 
-  background-image: url('../../img/mail_locked_96.png'), none;
-}
-
-#newUserBtn {
-  float: left;
-  height: 80%;
-  width: 47%;
-}
-
-#advancedUserBtn {
-  float: right;
-  height: 80%;
-  width: 47%;
-}
