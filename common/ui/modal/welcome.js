@@ -92,24 +92,44 @@
 
   function generateKeyWelcome() {
     var options = {};
+    var result;
+    var error;
     options.algorithm = 'RSA/RSA';
     options.numBits = '2048';
     options.user = $('#genKeyName').val();
     options.email = $('#genKeyEmail').val();
     options.passphrase = '';
-    keyRing.viewModel('generateKey', [options], function(result, error) {
-      if (!error) {
-        $('#genAlert').showAlert('Success', 'New key generated and imported into key ring', 'success');
-        $('#generateKey').find('input, select').prop('disabled', true);
-        $('#genKeySubmit, #genKeyClear').prop('disabled', true);
-        // refresh grid
-        keyRing.event.triggerHandler('keygrid-reload');
-      } else {
-        $('#genAlert').showAlert('Generation Error', error.type === 'error' ? error.message : '', 'error');
+    //talk directly to controller
+    data = {
+      event: 'viewmodel',
+      method: "generateKey",
+      args: [options],
+      callback: function(result, error) {
+        if (!error) {
+          $('#genAlert').showAlert('Success', 'New key generated and imported into key ring', 'success');
+          $('#generateKey').find('input, select').prop('disabled', true);
+          $('#genKeySubmit, #genKeyClear').prop('disabled', true);
+          // refresh grid
+          keyRing.event.triggerHandler('keygrid-reload');
+        } else {
+          $('#genAlert').showAlert('Generation Error', error.type === 'error' ? error.message : '', 'error');
+        }
+        $('body').removeClass('busy');
+        $('#genKeyWait').modal('hide');
       }
-      $('body').removeClass('busy');
-      $('#genKeyWait').modal('hide');
-    });
+    };
+    alert('welcome: sendingMessageEvent');
+    mvelo.extension.sendMessage(data, function(response) {
+        if (data.callback) {
+          var respObj = {
+            event: "viewmodel-response",
+            result: response.result,
+            error: response.error,
+            //id: data.id
+          };
+          event.source.postMessage(JSON.stringify(respObj), '*');
+        }
+      });
   }
 
   $(document).ready(init);
