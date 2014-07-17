@@ -111,6 +111,15 @@
       $('#formBtns').hide();
       keyRing.event.triggerHandler('keygrid-reload');
       $('#finalBtns').show();
+      //load generated key as primary key into preferences
+      var update = {
+        general: {
+          primary_key: result,
+        }
+      };
+      keyRing.sendMessage({ event: 'set-prefs', data: update }, function() {
+        normalize();
+      });
     } else {
       $('#genAlert').showAlert('Generation Error', error.type === 'error' ? error.message : '', 'error');
     }
