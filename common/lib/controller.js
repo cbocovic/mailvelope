@@ -213,6 +213,10 @@ define(function (require, exports, module) {
         // get armored message from dFrame
         dFramePorts[id].postMessage({event: 'armored-message'});
         break;
+      case 'welcome-popup-init':
+        // get armored message from dFrame
+        welcomePort.postMessage({event: 'message-port-ref', port:welcomePort});
+        break;
       case 'pwd-dialog-init':
         // pass over keyid and userid to dialog
         pwdPort.postMessage({event: 'message-userid', userid: messageBuffer[id].userid, keyid: messageBuffer[id].key.primaryKey.getKeyId().toHex(), cache: prefs.data.security.password_cache});
@@ -498,21 +502,11 @@ define(function (require, exports, module) {
         }
         mainCsPorts[id].postMessage({event: 'set-user-new', newUser: user});
         break;
-/*      case 'wframe-display-welcome':
-        console.log('wframe-display-welcome');
-        if (welcomePopup) {
-          // welcome dialog already open
-          //welcomePopup.window.activate(); // focus
-          console.log('welcome window open');
-        } else {
-          //mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + id, {width: 742, height: 450, modal: true}, function(window) {
-            //welcomePopup = window;
-          //});
-          console.log('opening welcome window...');
-        }
-        break;*/
       case 'options-page':
         onBrowserAction('options');
+        setup.closeWelcomeWindow();
+        break;
+      case 'close-welcome':
         setup.closeWelcomeWindow();
         break;
       default:
@@ -521,7 +515,7 @@ define(function (require, exports, module) {
   }
 
   function handleMessageEvent(request, sender, sendResponse) {
-    //console.log('controller: handleMessageEvent', request);
+    console.log('controller: handleMessageEvent', request);
     switch (request.event) {
       case 'viewmodel':
         var response = {};
@@ -541,6 +535,39 @@ define(function (require, exports, module) {
         }
         if (response.result !== undefined || response.error) {
           sendResponse(response);
+        } else {
+          return true;
+        }
+        break;
+      case 'viewmodel-welcome':
+        var response = {};
+        var callback = function(error,result) {
+          welcomePort.postMessage({
+            event: 'viewmodel-response',
+            method: request.method,
+            result: result,
+            error: error
+          });
+        };
+        if(callback === undefined) alert('callback undefine');
+        request.args = request.args || [];
+        if (!Array.isArray(request.args)) {
+          request.args = [request.args];
+        }
+        request.args.push(callback);
+        try {
+          response.result = model[request.method].apply(model, request.args);
+        } catch (e) {
+          console.log('error in viewmodel: ', e);
+          response.error = e;
+        }
+        if (response.result !== undefined || response.error) {
+          welcomePort.postMessage({
+            event: 'viewmodel-response',
+            method: request.method,
+            result: response.result,
+            error: response.error
+          });
         } else {
           return true;
         }

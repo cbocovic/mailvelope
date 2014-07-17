@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="welcome.css">
   <script src="../../dep/jquery.min.js"></script>
   <script src="../../dep/jquery.ext.js"></script>
+  <script src="../../dep/bootstrap/js/bootstrap.js"></script>
+  <script src="../../dep/kendoui/js/kendo.web.min.js"></script>
   <script src="../inline/mvelo.js"></script>
   <script src="secureToken.js"></script>
   <script src="welcome.js"></script>
@@ -28,7 +30,7 @@
         <p>There are a few setup steps you need to take before you can send safe and secure email messages. Follow our tutorial to get started!</p>
       </div>
       <div id="infoForm" class="info-text">
-        <p>Please fill out this form.</p>
+        <p>To secure your email, we need to following information.</p>
         <form class="form-horizontal well" onsubmit="return false" autocomplete="off">
           <div class="control-group">
             <label class="control-label">Name</label>
@@ -47,29 +49,32 @@
             <div id="genAlert">
             </div>
           </div>
-          <div class="form-actions">
+          <div id="formBtns" class="form-actions">
             <button id="genKeySubmit" class="btn btn-primary">Submit</button>
             <button id="genKeyClear" class="btn">Clear</button>
           </div>
         </form>
         <div class="modal fade hide" id="genKeyWait">
           <div class="modal-header">
-            <h3>Key generation in progress...</h3>
+            <h3>Setup in progress...</h3>
           </div>
           <div class="modal-body">
             <div class="progress-bar">
-              <img alt="activity indicator" src="../img/progress-bar.gif">
+              <img alt="activity indicator" src="../../img/progress-bar.gif">
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <p>Please wait, key generation can take up to several minutes depending on factors like the key size.</p>
+          <div class="modal-footer">
+            <p>Please wait, setup can take up to several minutes.</p>
+          </div>
         </div>
       </div>
     </div>
     <div id="initialBtns" class="modal-footer">
       <button id="advancedBtn" class="btn">Advanced Options</button>
       <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
+    </div>
+    <div id="finalBtns" class="modal-footer">
+      <button id="finishBtn" class="btn btn-primary">Finish</button>
     </div>
   </div>
 </body>
