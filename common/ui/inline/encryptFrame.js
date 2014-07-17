@@ -39,8 +39,8 @@ var EncryptFrame = EncryptFrame || (function() {
     attachTo: function(element, options) {
       $.extend(this._options, options);
       this._init(element);
-      this._renderFrame(this._options.expanded);
       this._establishConnection();
+      this._renderFrame(this._options.expanded);
       this._registerEventListener();
       // set status to attached
       this._editElement.data(mvelo.FRAME_STATUS, mvelo.FRAME_ATTACHED);
@@ -76,32 +76,93 @@ var EncryptFrame = EncryptFrame || (function() {
       // create frame
       var toolbar = '';
       if (this._options.closeBtn) {
-        toolbar = toolbar + '<a class="m-frame-close">×</a>';
+        //toolbar = toolbar + '<a class="m-frame-close">×</a>';
       } else {
         toolbar = toolbar + '<span class="m-frame-fill-right"></span>';
       }
       /* jshint multistr: true */
       toolbar = toolbar + '\
-                <button id="signBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-sign"></i></button> \
-                <button id="encryptBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-encrypt"></i></button> \
-                <button id="undoBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-undo"></i></button> \
-                <button id="editorBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-editor"></i></button> \
+		<label class="showText"><input type="checkbox" id="signCheckbox"> Sign this email</label><br> \
+		<label class="showText"><input type="checkbox" id="encryptCheckbox"> Encrypt this email</label> \
                 ';
+// Original mailvelope toolbar buttons; leaving here temporarily for reference
+//                <button id="signBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-sign"></i></button> \
+//                <button id="encryptBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-encrypt"></i></button> \
+//                <button id="undoBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-undo"></i></button> \
+//                <button id="editorBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-editor"></i></button> \
+
       this._eFrame = $('<div/>', {
         id: 'eFrame-' + that.id,
         'class': 'm-encrypt-frame',
         html: toolbar
       });
 
-      this._eFrame.insertAfter(this._editElement);
+      //this._eFrame.insertAfter(this._editElement);
+      this._eFrame.insertAfter($(":contains('Send'):last"));
+
       $(window).on('resize', this._setFrameDim.bind(this));
       // to react on position changes of edit element, e.g. click on CC or BCC in GMail
       this._refreshPosIntervalID = window.setInterval(this._setFrameDim.bind(this), 1000);
-      this._eFrame.find('.m-frame-close').on('click', this._closeFrame.bind(this));
-      this._eFrame.find('#signBtn').on('click', this._onSignButton.bind(this));
-      this._eFrame.find('#encryptBtn').on('click', this._onEncryptButton.bind(this));
-      this._eFrame.find('#undoBtn').on('click', this._onUndoButton.bind(this));
-      this._eFrame.find('#editorBtn').on('click', this._onEditorButton.bind(this));
+      //this._eFrame.find('.m-frame-close').on('click', this._closeFrame.bind(this));
+      //this._eFrame.find('#signBtn').on('click', this._onSignButton.bind(this));
+      //this._eFrame.find('#encryptBtn').on('click', this._onEncryptButton.bind(this));
+      //this._eFrame.find('#undoBtn').on('click', this._onUndoButton.bind(this));
+      //this._eFrame.find('#editorBtn').on('click', this._onEditorButton.bind(this));
+      
+      var onSignChecked = this._onSignButton.bind(this);
+      var onAnyUnchecked = this._onUndoButton.bind(this);
+      var onEncryptChecked = this._onEncryptButton.bind(this);
+
+      this._eFrame.find('#signCheckbox').on(
+        'change',
+        {onChecked:onSignChecked,onUnchecked:onAnyUnchecked},
+        function(event) {
+          console.log("onSignChecked...");
+
+
+
+
+
+
+          that._test = $('<iframe/>', {
+            id: 'eDialog-' + that.id,
+            frameBorder: 0,
+            scrolling: 'no'
+          });
+          var url;
+          if (mvelo.crx) {
+            url = mvelo.extension.getURL('common/ui/inline/dialogs/autoSign.html?id=' + that.id);
+          } else if (mvelo.ffa) {
+            url = 'about:blank?mvelo=autoSign&id=' + that.id;
+          }
+          that._test.attr('src', url);
+          that._eFrame.append(that._test);
+ 
+
+
+
+
+
+
+          //if ($(this).is(':checked')) event.data.onChecked();
+          //else                        event.data.onUnchecked();
+          //that._port.postMessage({
+          //  event: 'sign-with-default',
+          //  sender: 'eFrame-' + that.id,
+          //  type: 'text'
+          //});
+        }
+      );
+
+      this._eFrame.find('#encryptCheckbox').on(
+        'change',
+        {onChecked:onEncryptChecked, onUnchecked:onAnyUnchecked},
+        function(event) {
+          if ($(this).is(':checked')) event.data.onChecked();
+          else                        event.data.onUnchecked();
+        }
+      );
+
       if (!expanded) {
         this._isToolbar = true;
         this._normalizeButtons();
@@ -205,9 +266,9 @@ var EncryptFrame = EncryptFrame || (function() {
       var editElementPos = this._editElement.position();
       var editElementWidth = this._editElement.width();
       if (this._isToolbar) {
-        var toolbarWidth = this._eFrame.width();
-        this._eFrame.css('top', editElementPos.top + 3);
-        this._eFrame.css('left', editElementPos.left + editElementWidth - toolbarWidth - 20);
+        //var toolbarWidth = this._eFrame.width();
+        //this._eFrame.css('top', editElementPos.top + 3);
+        //this._eFrame.css('left', editElementPos.left);//editElementPos.left + editElementWidth - toolbarWidth - 20);
       } else {
         this._eFrame.css('top', editElementPos.top + 2);
         this._eFrame.css('left', editElementPos.left + 2);

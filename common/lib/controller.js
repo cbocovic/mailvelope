@@ -168,7 +168,6 @@ define(function (require, exports, module) {
   }
 
   function handlePortMessage(msg) {
-    //console.log('controller handlePortMessage:', msg.event, msg.sender);
     var id = parseName(msg.sender).id;
     switch (msg.event) {
       case 'pwd-dialog-cancel':
@@ -396,6 +395,41 @@ define(function (require, exports, module) {
           // add key in buffer
           signBuffer.key = key.signKey;
           signBuffer.keyid = msg.signKeyId;
+          signBuffer.userid = key.userId;
+          if (cache) {
+            checkCacheResult(cache, signBuffer, function() {
+              eFramePorts[id].postMessage({event: 'email-text', type: msg.type, action: 'sign'});
+            });
+          } else {
+            // open password dialog
+            if (prefs.data.security.editor_mode == mvelo.EDITOR_EXTERNAL) {
+              editor.port.postMessage({event: 'show-pwd-dialog'});
+            } else if (prefs.data.security.editor_mode == mvelo.EDITOR_WEBMAIL) {
+              mvelo.windows.openPopup('common/ui/modal/pwdDialog.html?id=' + id, {width: 462, height: 377, modal: true}, function(window) {
+                pwdPopup = window;
+              });
+            }
+          }
+        }
+        break;
+      case 'sign-with-default':
+        console.log("in sign-with-default");
+        console.log("Primary key: ");
+        var keyID = prefs.data.general.primary_key.toLowerCase();
+        console.log(keyID);
+        var signBuffer = messageBuffer[id] = {};
+        signBuffer.callback = function(message, id) {
+          eFramePorts[id].postMessage({event: 'email-text', type: msg.type, action: 'sign'});
+        };
+        var cache = pwdCache.get(keyID, keyID);
+        if (cache && cache.key) {
+          signBuffer.key = cache.key;
+          eFramePorts[id].postMessage({event: 'email-text', type: msg.type, action: 'sign'});
+        } else {
+          var key = model.getKeyForSigning(keyID);
+          // add key in buffer
+          signBuffer.key = key.signKey;
+          signBuffer.keyid = keyID;
           signBuffer.userid = key.userId;
           if (cache) {
             checkCacheResult(cache, signBuffer, function() {
