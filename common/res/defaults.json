@@ -54,7 +54,7 @@
       "password_timeout": 30
     },
     "general": {
-      "editor_type": "plain",
+      "editor_type": "plain"
     },
     "main_active": true
   }

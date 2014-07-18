@@ -112,20 +112,31 @@
       keyRing.event.triggerHandler('keygrid-reload');
       $('#finalBtns').show();
       //load generated key as primary key into preferences
-      var update = {
-        general: {
-          primary_key: result,
-        }
+      data = {
+        event: 'viewmodel-welcome',
+        method: "getPrivateKeys"
       };
-      keyRing.sendMessage({ event: 'set-prefs', data: update }, function() {
-        normalize();
-      });
+      mvelo.extension.sendMessage(data, function(response) {});
     } else {
       $('#genAlert').showAlert('Generation Error', error.type === 'error' ? error.message : '', 'error');
     }
     $('body').removeClass('busy');
     $('#genKeyWait').modal('hide');
   }
+
+  function keyed(result) {
+    console.log('genKeyResult: '+result[result.length-1].id);
+    var update = {
+      general: {
+        primary_key: result[result.length-1].id,
+        auto_add_primary: true
+      }
+    };
+    mvelo.extension.sendMessage({ event: 'set-prefs', message: {data: update} }, function() {
+      //normalize();
+    });
+  }
+    
 
   function messageListener(data) {
     switch (data.event) {
@@ -136,6 +147,9 @@
             break;
           case 'generateKey':
             generated(data.result, data.error);
+            break;
+          case 'getPrivateKeys':
+            keyed(data.result);
             break;
         }
         break;
