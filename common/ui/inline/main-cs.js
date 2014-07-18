@@ -168,6 +168,8 @@
       return mvelo.PGP_PUBLIC_KEY;
     } else if (/END\sPGP\sPRIVATE\sKEY\sBLOCK/.test(armored)) {
       return mvelo.PGP_PRIVATE_KEY;
+    } else if (/END\sPGP\sPUBLIC\sKEY\sREQUEST/.test(armored)) {
+      return mvelo.PGP_REQUEST_KEY;
     }
   }
 
@@ -192,6 +194,10 @@
         case mvelo.PGP_PUBLIC_KEY:
           var imFrame = new ImportFrame(prefs);
           imFrame.attachTo(pgpEnd);
+          break;
+        case mvelo.PGP_REQUEST_KEY:
+          var reqFrame = new RequestFrame(prefs);
+          reqFrame.attachTo(pgpEnd);
           break;
       }
     });

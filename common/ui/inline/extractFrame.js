@@ -45,6 +45,7 @@ var ExtractFrame = ExtractFrame || (function() {
     },
 
     _init: function(pgpEnd) {
+      console.log('called from: '+this._typeRegex);
       this._pgpEnd = pgpEnd;
       // find element with complete armored text and width > 0
       this._pgpElement = pgpEnd;
