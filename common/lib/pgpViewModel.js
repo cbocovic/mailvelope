@@ -186,6 +186,7 @@ define(function(require, exports, module) {
   function getKeyUserIDs(proposal) {
     var result = [];
     keyring.getAllKeys().forEach(function(key) {
+      console.log(key);
       if (key.verifyPrimaryKey() === openpgp.enums.keyStatus.valid) {
         var user = {};
         mapKeyUserIds(key, user, proposal);
@@ -199,11 +200,14 @@ define(function(require, exports, module) {
   }
 
   function mapKeyUserIds(key, user, proposal) {
+    var prefs = getPreferences();
+    var pkID = prefs.general.primary_key.toLowerCase();
     user.keyid = key.primaryKey.getKeyId().toHex();
+
     try {
       user.userid = getUserId(key);
       var email = goog.format.EmailAddress.parse(user.userid).getAddress();
-      user.proposal = proposal.some(function(element) {
+      user.proposal = user.keyid == pkID || proposal.some(function(element) {
         return email === element;
       });
     } catch (e) {
