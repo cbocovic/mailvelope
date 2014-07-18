@@ -109,7 +109,6 @@ var EncryptFrame = EncryptFrame || (function() {
       //this._eFrame.find('#undoBtn').on('click', this._onUndoButton.bind(this));
       //this._eFrame.find('#editorBtn').on('click', this._onEditorButton.bind(this));
       
-      var onSignChecked = this._onSignButton.bind(this);
       var onAnyUnchecked = this._onUndoButton.bind(this);
       var onEncryptChecked = this._onEncryptButton.bind(this);
 
@@ -117,40 +116,15 @@ var EncryptFrame = EncryptFrame || (function() {
         'change',
         {onChecked:onSignChecked,onUnchecked:onAnyUnchecked},
         function(event) {
-          console.log("onSignChecked...");
-
-
-
-
-
-
-          that._test = $('<iframe/>', {
-            id: 'eDialog-' + that.id,
-            frameBorder: 0,
-            scrolling: 'no'
-          });
-          var url;
-          if (mvelo.crx) {
-            url = mvelo.extension.getURL('common/ui/inline/dialogs/autoSign.html?id=' + that.id);
-          } else if (mvelo.ffa) {
-            url = 'about:blank?mvelo=autoSign&id=' + that.id;
+          if ($(this).is(':checked')) {
+            that._port.postMessage({
+              event: 'sign-with-default',
+              sender: 'eFrame-' + that.id,
+              type: 'text'
+            });
+          } else {
+            onAnyUnchecked();
           }
-          that._test.attr('src', url);
-          that._eFrame.append(that._test);
- 
-
-
-
-
-
-
-          //if ($(this).is(':checked')) event.data.onChecked();
-          //else                        event.data.onUnchecked();
-          //that._port.postMessage({
-          //  event: 'sign-with-default',
-          //  sender: 'eFrame-' + that.id,
-          //  type: 'text'
-          //});
         }
       );
 
