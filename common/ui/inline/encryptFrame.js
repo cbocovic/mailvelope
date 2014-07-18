@@ -108,13 +108,12 @@ var EncryptFrame = EncryptFrame || (function() {
       //this._eFrame.find('#encryptBtn').on('click', this._onEncryptButton.bind(this));
       //this._eFrame.find('#undoBtn').on('click', this._onUndoButton.bind(this));
       //this._eFrame.find('#editorBtn').on('click', this._onEditorButton.bind(this));
-      
+
       var onAnyUnchecked = this._onUndoButton.bind(this);
-      var onEncryptChecked = this._onEncryptButton.bind(this);
 
       this._eFrame.find('#signCheckbox').on(
         'change',
-        {onChecked:onSignChecked,onUnchecked:onAnyUnchecked},
+        {onUnchecked:onAnyUnchecked},
         function(event) {
           if ($(this).is(':checked')) {
             that._port.postMessage({
@@ -123,17 +122,25 @@ var EncryptFrame = EncryptFrame || (function() {
               type: 'text'
             });
           } else {
-            onAnyUnchecked();
+            event.data.onUnchecked();
           }
         }
       );
 
       this._eFrame.find('#encryptCheckbox').on(
         'change',
-        {onChecked:onEncryptChecked, onUnchecked:onAnyUnchecked},
+        {onUnchecked:onAnyUnchecked},
         function(event) {
-          if ($(this).is(':checked')) event.data.onChecked();
-          else                        event.data.onUnchecked();
+          if ($(this).is(':checked')) {
+            that._port.postMessage({
+              event: 'request-public-keys-for',
+              sender: 'eFrame-' + that.id,
+              type: 'data',
+              data: that._getEmailRecipient()
+            });
+          } else {
+            event.data.onUnchecked();
+          }
         }
       );
 
@@ -368,6 +375,12 @@ var EncryptFrame = EncryptFrame || (function() {
           if (valid !== null) {
             emails = emails.concat(valid);
           }
+        // this test is very gmail-specific but it works for now:
+        } else if ($(this).attr('email') !== undefined && $(this).attr('name') === undefined) {
+          valid = $(this).attr('email').match(emailRegex);
+          if (valid !== null) {
+            emails = emails.concat(valid);
+          }
         }
       });
       $('input, textarea').filter(':visible').each(function() {
@@ -461,6 +474,59 @@ var EncryptFrame = EncryptFrame || (function() {
             break;
           case 'dialog-cancel':
             that._removeDialog();
+            break;
+          case 'public-key-userids-for':
+            var toRecips = that._getEmailRecipient();
+            var realKeys = [];
+            msg.keys.forEach(function(key){
+              if (key.proposal) realKeys.push(key);
+            });
+            
+            console.log("typed recipients: ", toRecips);
+            console.log("mailvelope keys: ", realKeys);
+            if (realKeys.length > 0 && toRecips.length > realKeys.length - 1) { // TODO: only -1 if encrypt-to-self is on
+              var noKeyFor = [];
+              for (var i = 0; i < toRecips.length; i++) {
+                var haveKey = false;
+                var lookingFor = "<" + toRecips[i] + ">";
+                for (var j = 0; j < realKeys.length; j++) {
+                  if (realKeys[j].userid.length >= lookingFor.length && realKeys[j].userid.slice(-lookingFor.length)==lookingFor) {
+                    haveKey = true;
+                    break;
+                  }
+                }
+                if (!haveKey) noKeyFor = noKeyFor.concat(toRecips[i]);
+              }
+              if (confirm("This email cannot be encrypted because you do not have an encryption key for the following recipients:\n\n"+noKeyFor+"\n\nWould you like to send them an email requesting their encryption keys?")) {
+                console.log("send an email...");
+                //var events = ["dblclick","mousemove","mouseover","mouseenter","mousedown","focus","mouseup","click","mouseleave","mouseout","keydown","keypress","keyup","abort","error","load","resize","scroll","unload","blur","change","reset","select","submit"];
+                //for (var i = 0; i < events.length; i++) {
+                //  console.log("triggering event: "+events[i]);
+                //  $(":contains('COMPOSE')[role='button']").trigger(events[i]);
+                //}
+                document.location.href = '#compose';
+                setTimeout(function(){
+                  if ($('textarea[name="to"]:last').val() !== "") {
+                    console.log("non-empty compose window. aborting.");
+                    return;
+                  }
+                  $('textarea[name="to"]:last').val(noKeyFor.join());
+                  $('input[name="subjectbox"]:last').val('Send me yo key pliss');
+                  $('div.editable[role="textbox"]:last').html("Please send me a key or I'll hit you!!!!1");
+                }, 1000);
+              }
+              $('#encryptCheckbox').attr('checked', false);
+            } else {
+              console.log("Got keys for everyone. Proceeding with encryption...");
+              var recipKeyIDs = [];
+              for (var i = 0; i < realKeys.length; i++) recipKeyIDs.push(realKeys[i].keyid);
+              that._port.postMessage({
+                event: 'encrypt-dialog-ok',
+                sender: 'eFrame-' + that.id,
+                recipient: recipKeyIDs,
+                type:'webmail'
+              });
+            }
             break;
           default:
             console.log('unknown event');

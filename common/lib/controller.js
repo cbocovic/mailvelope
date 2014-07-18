@@ -373,7 +373,17 @@ define(function (require, exports, module) {
         var keys = model.getKeyUserIDs(emails);
         var primary = prefs.data.general.auto_add_primary && prefs.data.general.primary_key.toLowerCase();
         // if editor is active send to corresponding eDialog
-        eDialogPorts[editor && editor.id || id].postMessage({event: 'public-key-userids', keys: keys, primary: primary});
+        var tID = editor && editor.id || id;
+        if (eDialogPorts[tID] !== undefined) {
+          eDialogPorts[editor && editor.id || id].postMessage({event: 'public-key-userids', keys: keys, primary: primary});
+        }
+        break;
+      case 'request-public-keys-for':
+        var emails = sortAndDeDup(msg.data);
+        var keys = model.getKeyUserIDs(emails);
+        var primary = prefs.data.general.auto_add_primary && prefs.data.general.primary_key.toLowerCase();
+        // if editor is active send to corresponding eDialog
+        eFramePorts[id].postMessage({event: 'public-key-userids-for', keys: keys, primary: primary});
         break;
       case 'encrypt-dialog-ok':
         // add recipients to buffer
