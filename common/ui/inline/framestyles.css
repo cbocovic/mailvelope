@@ -36,6 +36,10 @@
   background-image: url('../../img/key-icon-blue96.png'), none;
 }
 
+:root .m-extract-frame.m-request {
+  background-image: url('../../img/waiting48.png'), none;
+}
+
 :root .m-extract-frame.m-open {
   background-position: 20px center, center center;
   background-size: 80px, 48px;
@@ -47,6 +51,10 @@
 
 :root .m-extract-frame.m-open.m-import {
   background-image: url('../../img/key-icon-blue96.png'), url('../../dep/kendoui/styles/Default/loading-image.gif');
+}
+
+:root .m-extract-frame.m-open.m-request {
+  background-image: url('../../img/waiting48.png'), url('../../dep/kendoui/styles/Default/loading-image.gif');
 }
 
 :root .m-extract-frame.m-open.m-import.m-ok {
@@ -143,6 +151,10 @@
 
 :root .m-import.m-cursor {
   cursor: url('../../img/edit_add-22.png'), auto;
+}
+
+:root .m-request.m-cursor {
+  cursor: url('../../img/key_request-24.png'), auto;
 }
 
 :root .m-extract-frame .m-frame-dialog,

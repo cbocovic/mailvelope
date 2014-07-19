@@ -28,7 +28,7 @@ var RequestFrame = RequestFrame || (function() {
 
   requestFrame.prototype._renderFrame = function() {
     this.parent._renderFrame.call(this);
-    this._eFrame.addClass('m-import');
+    this._eFrame.addClass('m-request');
   };
 
   requestFrame.prototype._clickHandler = function() {

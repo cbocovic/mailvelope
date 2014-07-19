@@ -27,6 +27,7 @@
   ],
   "web_accessible_resources": [
     "common/img/key-24.png",
+    "common/img/key_request-24.png",
     "common/img/mail_locked_96.png",
     "common/img/mail_signed_96.png",
     "common/img/mail_open_96.png",
@@ -38,6 +39,7 @@
     "common/img/edit_add-22.png",
     "common/img/ok48.png",
     "common/img/warning48.png",
+    "common/img/waiting48.png",
     "common/img/no48.png",
     "common/img/verify-24.png",
     "common/dep/kendoui/styles/Default/loading-image.gif",
