@@ -28,6 +28,7 @@ var EncryptFrame = EncryptFrame || (function() {
     this._emailTextElement = null;
     this._emailUndoText = null;
     this._editorMode = prefs.security.editor_mode;
+    this._myKey = prefs.general.primary_key;
     // type of external editor
     this._editorType = prefs.general.editor_type;
     this._options = {expanded: false, closeBtn: true};
@@ -511,8 +512,8 @@ var EncryptFrame = EncryptFrame || (function() {
                     return;
                   }
                   $('textarea[name="to"]:last').val(noKeyFor.join());
-                  $('input[name="subjectbox"]:last').val('Send me yo key pliss');
-                  $('div.editable[role="textbox"]:last').html("Please send me a key or I'll hit you!!!!1");
+                  $('input[name="subjectbox"]:last').val('[Ezee] Request for secure communication');
+                  $('div.editable[role="textbox"]:last').html("-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----");
                 }, 1000);
               }
               $('#encryptCheckbox').attr('checked', false);
