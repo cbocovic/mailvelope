@@ -217,6 +217,9 @@ define(function(require, exports, module) {
   }
 
   function getArmoredKeys(keyids, options) {
+    console.log('call to getArmoredKeys');
+    console.log('keyids: '+keyids);
+    console.log('options: '+options);
     var result = [];
     var keys = null;
     if (options.all) {
@@ -225,6 +228,7 @@ define(function(require, exports, module) {
       keys = keyids.map(function(keyid) {
         return keyring.getKeysForId(keyid)[0];
       });
+      console.log('keys: '+keys);
     }
     keys.forEach(function(key) {
       var armored = {};
@@ -234,6 +238,7 @@ define(function(require, exports, module) {
       if (options.priv && key.isPrivate()) {
         armored.armoredPrivate = key.armor();
       }
+      console.log('armored: '+armored);
       result.push(armored);
     });
     return result;

@@ -431,7 +431,25 @@ define(function (require, exports, module) {
         console.log('uid: '+userId+"<"+primary.email+">");
 
         //find user's name and email
-        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br>"+userId+" &lt"+primary.email+"&gt has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----";
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br>"+userId+" &lt"+primary.email+"&gt has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----<br><br>";
+        //add public key
+        var args = {pub:true, priv:false, all:false};
+        console.log("attempting to key armored key for "+primary.id.toLowerCase());
+        try {
+          var result = model.getArmoredKeys([primary.id.toLowerCase()], args);
+        } catch (e) {
+          console.log('error in viewmodel: ', e);
+        }
+        var publicKey = result[0].armoredPublic;
+        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
+        console.log("after str replace");
+        var str="";
+        for(var i=0; i<publicKey.length; i++){
+          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
+        }
+        console.log(str);
+        console.log(publicKey);
+        text = text+publicKey;
         eFramePorts[id].postMessage({event: 'key-request-text', text:text});
         break;
       case 'encrypt-dialog-ok':
