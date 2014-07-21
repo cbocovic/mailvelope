@@ -485,7 +485,7 @@ var EncryptFrame = EncryptFrame || (function() {
             
             console.log("typed recipients: ", toRecips);
             console.log("mailvelope keys: ", realKeys);
-            if (realKeys.length > 0 && toRecips.length > realKeys.length - 1) { // TODO: only -1 if encrypt-to-self is on
+            if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) { // TODO: only -1 if encrypt-to-self is on
               var noKeyFor = [];
               for (var i = 0; i < toRecips.length; i++) {
                 var haveKey = false;
@@ -513,7 +513,10 @@ var EncryptFrame = EncryptFrame || (function() {
                   }
                   $('textarea[name="to"]:last').val(noKeyFor.join());
                   $('input[name="subjectbox"]:last').val('[Ezee] Request for secure communication');
-                  $('div.editable[role="textbox"]:last').html("-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----");
+                  that._port.postMessage({
+                    event: 'key-request-text',
+                    sender: 'eFrame-'+that.id,
+                  });
                 }, 1000);
               }
               $('#encryptCheckbox').attr('checked', false);
@@ -528,6 +531,9 @@ var EncryptFrame = EncryptFrame || (function() {
                 type:'webmail'
               });
             }
+            break;
+          case 'key-request-text':
+            $('div.editable[role="textbox"]:last').html(msg.text);
             break;
           default:
             console.log('unknown event');

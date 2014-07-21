@@ -385,6 +385,12 @@ define(function (require, exports, module) {
         // if editor is active send to corresponding eDialog
         eFramePorts[id].postMessage({event: 'public-key-userids-for', keys: keys, primary: primary});
         break;
+      case 'key-request-text':
+        var text;
+        //find user's name and email
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----";
+        eFramePorts[id].postMessage({event: 'key-request-text', text:text});
+        break;
       case 'encrypt-dialog-ok':
         // add recipients to buffer
         keyidBuffer[id] = msg.recipient;
