@@ -33,6 +33,7 @@ var EncryptFrame = EncryptFrame || (function() {
     this._editorType = prefs.general.editor_type;
     this._options = {expanded: false, closeBtn: true};
     this._keyCounter = 0;
+    this._sendBtn = null;
   };
 
   encryptFrame.prototype = {
@@ -103,7 +104,9 @@ var EncryptFrame = EncryptFrame || (function() {
       this._port.postMessage({event: 'pwd-dialog-bypass', sender: 'eFrame-' + this.id, password: "woo", cache: true});
 
       //this._eFrame.insertAfter(this._editElement);
-      this._eFrame.insertAfter($(":contains('Send'):last"));
+      this._sendBtn = $(":contains('Send'):last");
+      this._eFrame.insertAfter(this._sendBtn);
+      this._sendBtn.html("Send Unencrypted");
 
       $(window).on('resize', this._setFrameDim.bind(this));
       // to react on position changes of edit element, e.g. click on CC or BCC in GMail
@@ -145,6 +148,7 @@ var EncryptFrame = EncryptFrame || (function() {
             });
           } else {
             event.data.onUnchecked();
+            that._sendBtn.html("Send Unencrypted");
           }
         }
       );
@@ -369,7 +373,7 @@ var EncryptFrame = EncryptFrame || (function() {
 
     _getEmailRecipient: function() {
       var emails = [];
-      var emailRegex = /[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/g;
+      var emailRegex = /^\s*[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\s*$/g;
       $('span').filter(':visible').each(function() {
         var valid = $(this).text().match(emailRegex);
         if (valid !== null) {
@@ -378,12 +382,14 @@ var EncryptFrame = EncryptFrame || (function() {
           spanClone.children().remove();
           valid = spanClone.text().match(emailRegex);
           if (valid !== null) {
+            console.log("got recipient(1): ", $(this));
             emails = emails.concat(valid);
           }
         // this test is very gmail-specific but it works for now:
         } else if ($(this).attr('email') !== undefined && $(this).attr('name') === undefined) {
           valid = $(this).attr('email').match(emailRegex);
           if (valid !== null) {
+            console.log("got recipient(2): ", $(this));
             emails = emails.concat(valid);
           }
         }
@@ -487,8 +493,8 @@ var EncryptFrame = EncryptFrame || (function() {
               if (key.proposal) realKeys.push(key);
             });
             
-            console.log("typed recipients: ", toRecips);
-            console.log("mailvelope keys: ", realKeys);
+            //console.log("typed recipients: ", toRecips);
+            //console.log("mailvelope keys: ", realKeys);
             if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) { // TODO: only -1 if encrypt-to-self is on
               var noKeyFor = [];
               for (var i = 0; i < toRecips.length; i++) {
@@ -503,12 +509,6 @@ var EncryptFrame = EncryptFrame || (function() {
                 if (!haveKey) noKeyFor = noKeyFor.concat(toRecips[i]);
               }
               if (confirm("This email cannot be encrypted because you do not have an encryption key for the following recipients:\n\n"+noKeyFor+"\n\nWould you like to send them an email requesting their encryption keys?")) {
-                console.log("send an email...");
-                //var events = ["dblclick","mousemove","mouseover","mouseenter","mousedown","focus","mouseup","click","mouseleave","mouseout","keydown","keypress","keyup","abort","error","load","resize","scroll","unload","blur","change","reset","select","submit"];
-                //for (var i = 0; i < events.length; i++) {
-                //  console.log("triggering event: "+events[i]);
-                //  $(":contains('COMPOSE')[role='button']").trigger(events[i]);
-                //}
                 document.location.href = '#compose';
                 setTimeout(function(){
                   if ($('textarea[name="to"]:last').val() !== "") {
@@ -524,8 +524,9 @@ var EncryptFrame = EncryptFrame || (function() {
                 }, 1000);
               }
               $('#encryptCheckbox').attr('checked', false);
+              that._sendBtn.html("Send Unencrypted");
             } else {
-              console.log("Got keys for everyone. Proceeding with encryption...");
+              that._sendBtn.html("Send");
               var recipKeyIDs = [];
               for (var i = 0; i < realKeys.length; i++) recipKeyIDs.push(realKeys[i].keyid);
               that._port.postMessage({
