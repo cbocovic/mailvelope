@@ -19,7 +19,7 @@
 
     port = mvelo.extension.connect({name: 'welcome-'+id});
     port.onMessage.addListener(messageListener);
-    port.postMessage({event: 'welcome-popup-init', sender: 'welcome'+id});
+    //port.postMessage({event: 'welcome-popup-init', sender: 'welcome'+id});
 
     $('#advancedBtn').click(onAdvanced);
     $('#getStartedBtn').click(onGetStarted);

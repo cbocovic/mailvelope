@@ -73,6 +73,7 @@ var EncryptFrame = EncryptFrame || (function() {
     },
 
     _renderFrame: function(expanded) {
+      console.log("in _renderFrame()");
       var that = this;
       // create frame
       var toolbar = '';
@@ -97,6 +98,9 @@ var EncryptFrame = EncryptFrame || (function() {
         'class': 'm-encrypt-frame',
         html: toolbar
       });
+
+      // TODO: put this in init
+      this._port.postMessage({event: 'pwd-dialog-bypass', sender: 'eFrame-' + this.id, password: "woo", cache: true});
 
       //this._eFrame.insertAfter(this._editElement);
       this._eFrame.insertAfter($(":contains('Send'):last"));

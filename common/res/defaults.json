@@ -50,8 +50,8 @@
     "security": {
       "editor_mode": "webmail",
       "display_decrypted": "inline",
-      "password_cache": false,
-      "password_timeout": 30
+      "password_cache": true,
+      "password_timeout": 2880
     },
     "general": {
       "editor_type": "plain"

@@ -212,10 +212,10 @@ define(function (require, exports, module) {
         // get armored message from dFrame
         dFramePorts[id].postMessage({event: 'armored-message'});
         break;
-      case 'welcome-popup-init':
+      //case 'welcome-popup-init':
         // get armored message from dFrame
-        welcomePort.postMessage({event: 'message-port-ref', port:welcomePort});
-        break;
+        //welcomePort.postMessage({event: 'message-port-ref', port:welcomePort});
+        //break;
       case 'pwd-dialog-init':
         // pass over keyid and userid to dialog
         pwdPort.postMessage({event: 'message-userid', userid: messageBuffer[id].userid, keyid: messageBuffer[id].key.primaryKey.getKeyId().toHex(), cache: prefs.data.security.password_cache});
@@ -347,6 +347,39 @@ define(function (require, exports, module) {
             pwdPopup.close();
             pwdPopup = null;
           }
+        }
+        break;
+      case 'pwd-dialog-bypass':
+        var signBuffer = messageBuffer[id] = {};
+        signBuffer.callback = function(message, id) {};
+        var cache = pwdCache.get(prefs.data.general.primary_key, prefs.data.general.primary_key);
+
+        var key = model.getKeyForSigning(prefs.data.general.primary_key.toLowerCase());
+        signBuffer.key = key.signKey;
+        signBuffer.keyid = prefs.data.general.primary_key;
+        signBuffer.userid = key.userId;
+
+        var message = messageBuffer[id];
+        try {
+          model.unlockKey(message.key, message.keyid, msg.password, function(err, key) {
+            if (err) {
+              console.log("error: something went wrong in pwd-dialog-bypass(1)");
+            } else if (key) {
+              // password correct
+              message.key = key;
+              if (msg.cache != prefs.data.security.password_cache) {
+                // update pwd cache status
+                prefs.update({security: {password_cache: msg.cache}});
+              }
+              if (msg.cache) {
+                // set unlocked key and password in cache
+                pwdCache.set(message, msg.password);
+              }
+              message.callback(message, id);
+            }
+          });
+        } catch (e) {
+          console.log("error: something went wrong in pwd-dialog-bypass(2)");
         }
         break;
       case 'sign-dialog-init':

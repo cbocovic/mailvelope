@@ -32,8 +32,8 @@
     port = mvelo.extension.connect({name: name});
     addMessageListener();
     port.postMessage({event: 'get-prefs', sender: name});
-    port.postMessage({event: 'get-user-new', sender: name});
-    //initContextMenu();
+//    port.postMessage({event: 'get-user-new', sender: name});
+    initContextMenu();
     //if new user, prompt them to generate keys
   }
 
@@ -262,14 +262,14 @@
               off();
             }
             break;
-          case 'set-user-new':
-            console.log('received msg from controller: '+request.newUser);
-            newUser = request.newUser;
-            //if the user hasn't generated keys, send them to the welcome page
-            if (newUser){
-              port.postMessage({event: 'wframe-display-welcome', sender: name});
-            }
-            break;
+//          case 'set-user-new':
+//            console.log('received msg from controller: '+request.newUser);
+//            newUser = request.newUser;
+//            //if the user hasn't generated keys, send them to the welcome page
+//            if (newUser){
+//              port.postMessage({event: 'wframe-display-welcome', sender: name});
+//            }
+//            break;
           default:
             console.log('unknown event');
         }

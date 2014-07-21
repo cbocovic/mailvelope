@@ -8,13 +8,18 @@ define(function (require, exports, module) {
   init();
 
   function init() {
+    console.log("in init()");
     var prefs = model.getPreferences();
-    if (!prefs) {
+    console.log("preferences: ", prefs);
+    if (!prefs || !prefs.general || !prefs.general.primary_key) {
      // First time being run --- show welcome popup
+      console.log("opening popup...");
       mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + name, {width: 742, height: 450, modal: true}, function(window) {
         windowPopup = window;
       });
       //alert('Welcome to mailvelope!');
+    } else {
+      console.log("not opening popups because prefs found");
     }
   }
 
