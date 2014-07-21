@@ -420,8 +420,18 @@ define(function (require, exports, module) {
         break;
       case 'key-request-text':
         var text;
+        var privateKeys = model.getPrivateKeys();
+        var primary;
+        privateKeys.forEach(function(key) {
+          if(key.id == prefs.data.general.primary_key) primary = key;
+        });
+        console.log('key: ');
+        console.log(primary);
+        var userId = primary.name;
+        console.log('uid: '+userId+"<"+primary.email+">");
+
         //find user's name and email
-        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----";
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br>"+userId+" &lt"+primary.email+"&gt has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----";
         eFramePorts[id].postMessage({event: 'key-request-text', text:text});
         break;
       case 'encrypt-dialog-ok':

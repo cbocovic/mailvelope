@@ -597,6 +597,7 @@ define(function(require, exports, module) {
   }
 
   exports.getKeyUserIDs = getKeyUserIDs;
+  exports.getUserId = getUserId;
   exports.getKeyForSigning = getKeyForSigning;
   exports.importKeys = importKeys;
   exports.removeKey = removeKey;
