@@ -45,7 +45,13 @@ var RequestFrame = RequestFrame || (function() {
     pKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n"+pKey.replace("REQUEST", "BLOCK");
     console.log('pKey:');
     console.log(pKey);
-    importKey.importKey(pKey,function(){});
+
+    var keys = [];
+
+    keys.push({type: 'public', armored: pKey});
+    that._port.postMessage({event: 'import-key-request', sender: 'reqFrame'+that.id, data:keys});
+    
+    //importKey.importKey(pKey,function(){});
     //that._port.postMessage({
     //  event: 'imframe-armored-key',
     //  data: pKey,

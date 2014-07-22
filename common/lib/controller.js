@@ -447,6 +447,10 @@ define(function (require, exports, module) {
         var text = publicKey;
         reqFramePorts[id].postMessage({event: 'public-key-result', text:text});
         break;
+      case 'import-key-request':
+        console.log('import in controller');
+        model.importKeys(msg.data);
+        break;
       case 'encrypt-dialog-ok':
         // add recipients to buffer
         keyidBuffer[id] = msg.recipient;
