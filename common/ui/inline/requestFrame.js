@@ -19,7 +19,7 @@ var RequestFrame = RequestFrame || (function() {
 
   var requestFrame = function(prefs) {
     ExtractFrame.call(this, prefs);
-    this._ctrlName = 'imFrame-' + this.id;
+    this._ctrlName = 'reqFrame-' + this.id;
     this._typeRegex = /-----BEGIN PGP PUBLIC KEY REQUEST-----[\s\S]+?-----END PGP PUBLIC KEY REQUEST-----/;
   };
 
@@ -34,9 +34,25 @@ var RequestFrame = RequestFrame || (function() {
   requestFrame.prototype._clickHandler = function() {
     var that = this;
     console.log('request frame called:');
-    console.log(that._getArmoredMessage());
+    var msg = that._getArmoredMessage();
     //find out who sent it
+    var email = msg.match(/<[\s\S]+?>/)[0];
+    email = email.replace(/[<|>]/g, "");
+    console.log(email);
 
+    document.location.href = '#compose';
+    setTimeout(function(){
+      if ($('textarea[name="to"]:last').val() !== "") {
+        console.log("non-empty compose window. aborting.");
+        return;
+      }
+      $('textarea[name="to"]:last').val(email);
+      $('input[name="subjectbox"]:last').val('[Ezee] Public Key');
+      that._port.postMessage({
+        event: 'public-key-text',
+        sender: 'reqFrame-'+that.id,
+      });
+    }, 1000);
     return false;
   };
 
@@ -44,15 +60,12 @@ var RequestFrame = RequestFrame || (function() {
     this.parent._registerEventListener.call(this);
     var that = this;
     this._port.onMessage.addListener(function(msg) {
+      console.log('received message'+ msg.event);
       switch (msg.event) {
-        case 'import-result':
-          if (msg.resultType.error) {
-            that._eFrame.addClass('m-error');
-          } else if (msg.resultType.warning) {
-            that._eFrame.addClass('m-warning');
-          } else if (msg.resultType.success) {
-            that._eFrame.addClass('m-ok');
-          }
+        case 'public-key-result':
+          console.log('received key:');
+          console.log(msg.text);
+          $('div.editable[role="textbox"]:last').html(msg.text);
           break;
       }
     });

@@ -44,6 +44,8 @@ define(function (require, exports, module) {
   var pwdPort = null;
   // port to import key frames
   var imFramePorts = {};
+  // port to request key frames
+  var reqFramePorts = {};
   //port to welcome window
   var welcomePort = null;
   // editor window
@@ -116,6 +118,10 @@ define(function (require, exports, module) {
       case 'imFrame':
         imFramePorts[sender.id] = port;
         break;
+      case 'reqFrame':
+        console.log('adding req frame port:'+sender.id);
+        reqFramePorts[sender.id] = port;
+        break;
       case 'welcome':
         welcomePort = port;
         break;
@@ -158,6 +164,9 @@ define(function (require, exports, module) {
         break;
       case 'imFrame':
         delete imFramePorts[sender.id];
+        break;
+      case 'reqFrame':
+        delete reqFramePorts[sender.id];
         break;
       case 'welcome':
         welcomePort = null;
@@ -447,10 +456,29 @@ define(function (require, exports, module) {
         for(var i=0; i<publicKey.length; i++){
           str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
         }
-        console.log(str);
-        console.log(publicKey);
         text = text+publicKey;
         eFramePorts[id].postMessage({event: 'key-request-text', text:text});
+        break;
+      case 'public-key-text':
+        var privateKeys = model.getPrivateKeys();
+        var primary;
+        privateKeys.forEach(function(key) {
+          if(key.id == prefs.data.general.primary_key) primary = key;
+        });
+        var args = {pub:true, priv:false, all:false};
+        try {
+          var result = model.getArmoredKeys([primary.id.toLowerCase()], args);
+        } catch (e) {
+          console.log('error in viewmodel: ', e);
+        }
+        var publicKey = result[0].armoredPublic;
+        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
+        var str="";
+        for(var i=0; i<publicKey.length; i++){
+          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
+        }
+        var text = publicKey;
+        reqFramePorts[id].postMessage({event: 'public-key-result', text:text});
         break;
       case 'encrypt-dialog-ok':
         // add recipients to buffer
@@ -850,6 +878,7 @@ define(function (require, exports, module) {
     destroyNodes(vFramePorts);
     destroyNodes(eFramePorts);
     destroyNodes(imFramePorts);
+    destroyNodes(reqFramePorts);
   }
 
   function addToWatchList() {

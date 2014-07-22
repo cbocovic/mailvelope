@@ -74,10 +74,10 @@ var EncryptFrame = EncryptFrame || (function() {
     },
 
     _renderFrame: function(expanded) {
-      var userInfo = $('a[href="https://plus.google.com/u/0/me?tab=mX"]').attr('title');
-      var userName = userInfo.split("\n")[0].trim();
-      var userEmail = userInfo.split("\n")[1].replace(/[\(\)]/g, "").trim();
-      console.log("Your name is " + userName + " and your email is <" + userEmail + ">");
+      //var userInfo = $('a[href="https://plus.google.com/u/0/me?tab=mX"]').attr('title');
+      //var userName = userInfo.split("\n")[0].trim();
+      //var userEmail = userInfo.split("\n")[1].replace(/[\(\)]/g, "").trim();
+      //console.log("Your name is " + userName + " and your email is <" + userEmail + ">");
       var that = this;
       // create frame
       var toolbar = '';
