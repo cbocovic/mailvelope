@@ -119,7 +119,6 @@ define(function (require, exports, module) {
         imFramePorts[sender.id] = port;
         break;
       case 'reqFrame':
-        console.log('adding req frame port:'+sender.id);
         reqFramePorts[sender.id] = port;
         break;
       case 'welcome':
@@ -486,10 +485,10 @@ define(function (require, exports, module) {
         }
         break;
       case 'sign-with-default':
-        console.log("in sign-with-default");
-        console.log("Primary key: ");
+        //console.log("in sign-with-default");
+        //console.log("Primary key: ");
         var keyID = prefs.data.general.primary_key.toLowerCase();
-        console.log(keyID);
+        //console.log(keyID);
         var signBuffer = messageBuffer[id] = {};
         signBuffer.callback = function(message, id) {
           eFramePorts[id].postMessage({event: 'email-text', type: msg.type, action: 'sign'});
@@ -587,6 +586,8 @@ define(function (require, exports, module) {
         editor = null;
         break;
       case 'imframe-armored-key':
+        console.log('received key:');
+        console.log(msg.data);
         mvelo.tabs.loadOptionsTab('', handleMessageEvent, function(old, tab) {
           mvelo.tabs.sendMessage(tab, {
             event: "import-key",
@@ -623,16 +624,16 @@ define(function (require, exports, module) {
         privateKeys.forEach(function(key) {
           if(key.id == prefs.data.general.primary_key) primary = key;
         });
-        console.log('key: ');
-        console.log(primary);
+        //console.log('key: ');
+        //console.log(primary);
         var userId = primary.name;
-        console.log('uid: '+userId+"<"+primary.email+">");
+        //console.log('uid: '+userId+"<"+primary.email+">");
 
         //find user's name and email
-        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n"+userId+" <"+primary.email+"> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/\n\n-----END PGP PUBLIC KEY REQUEST-----\n\n";
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n"+userId+" <"+primary.email+"> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/";
         //add public key
         var args = {pub:true, priv:false, all:false};
-        console.log("attempting to key armored key for "+primary.id.toLowerCase());
+        //console.log("attempting to key armored key for "+primary.id.toLowerCase());
         try {
           var result = model.getArmoredKeys([primary.id.toLowerCase()], args);
         } catch (e) {
@@ -640,16 +641,15 @@ define(function (require, exports, module) {
         }
         var publicKey = result[0].armoredPublic;
 //        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
-        console.log("after str replace");
-        var str="";
-        for(var i=0; i<publicKey.length; i++){
-          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
-        }
-        text = encodeURIComponent(text+publicKey);
+        //strip headers out of public key to avoid confusion
+        publicKey = publicKey.replace(/-----BEGIN PGP PUBLIC KEY BLOCK-----/g,"\n");
+        publicKey = publicKey.replace(/-----END PGP PUBLIC KEY BLOCK-----/g,"\n");
+        text = text+publicKey;
+        text = text+"\n\n-----END PGP PUBLIC KEY REQUEST-----\n\n";
+        text = encodeURIComponent(text);
         subject = encodeURIComponent("[Ezee] Request for secure communication");
         to = encodeURIComponent(msg.recipients.join());
 
-        console.log("opening popup...");
         mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: true}, function(window) {
           //verifyPopup = window;
         });

@@ -40,6 +40,18 @@ var RequestFrame = RequestFrame || (function() {
     email = email.replace(/[<|>]/g, "");
     console.log(email);
 
+    //import key
+    var pKey = msg.match(/Version[\s\S]+?-----END PGP PUBLIC KEY REQUEST-----/)[0];
+    pKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n"+pKey.replace("REQUEST", "BLOCK");
+    console.log('pKey:');
+    console.log(pKey);
+    importKey.importKey(pKey,function(){});
+    //that._port.postMessage({
+    //  event: 'imframe-armored-key',
+    //  data: pKey,
+    //  sender: that._ctrlName
+    //});
+    //reply to request
     document.location.href = '#compose';
     setTimeout(function(){
       if ($('textarea[name="to"]:last').val() !== "") {
@@ -53,6 +65,7 @@ var RequestFrame = RequestFrame || (function() {
         sender: 'reqFrame-'+that.id,
       });
     }, 1000);
+
     return false;
   };
 
@@ -63,8 +76,6 @@ var RequestFrame = RequestFrame || (function() {
       console.log('received message'+ msg.event);
       switch (msg.event) {
         case 'public-key-result':
-          console.log('received key:');
-          console.log(msg.text);
           $('div.editable[role="textbox"]:last').html(msg.text);
           break;
       }
