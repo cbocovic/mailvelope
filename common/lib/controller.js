@@ -427,38 +427,6 @@ define(function (require, exports, module) {
         // if editor is active send to corresponding eDialog
         eFramePorts[id].postMessage({event: 'public-key-userids-for', keys: keys, primary: primary});
         break;
-      case 'key-request-text':
-        var text;
-        var privateKeys = model.getPrivateKeys();
-        var primary;
-        privateKeys.forEach(function(key) {
-          if(key.id == prefs.data.general.primary_key) primary = key;
-        });
-        console.log('key: ');
-        console.log(primary);
-        var userId = primary.name;
-        console.log('uid: '+userId+"<"+primary.email+">");
-
-        //find user's name and email
-        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----<br><br>"+userId+" &lt"+primary.email+"&gt has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:<br> <a href = 'https://cs.uwaterloo.ca/~cbocovic/cs889/'>wobsite</a><br><br>-----END PGP PUBLIC KEY REQUEST-----<br><br>";
-        //add public key
-        var args = {pub:true, priv:false, all:false};
-        console.log("attempting to key armored key for "+primary.id.toLowerCase());
-        try {
-          var result = model.getArmoredKeys([primary.id.toLowerCase()], args);
-        } catch (e) {
-          console.log('error in viewmodel: ', e);
-        }
-        var publicKey = result[0].armoredPublic;
-        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
-        console.log("after str replace");
-        var str="";
-        for(var i=0; i<publicKey.length; i++){
-          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
-        }
-        text = text+publicKey;
-        eFramePorts[id].postMessage({event: 'key-request-text', text:text});
-        break;
       case 'public-key-text':
         var privateKeys = model.getPrivateKeys();
         var primary;
@@ -647,6 +615,44 @@ define(function (require, exports, module) {
         break;
       case 'close-welcome':
         setup.closeWelcomeWindow();
+        break;
+      case 'key-request-init':
+        var text;
+        var privateKeys = model.getPrivateKeys();
+        var primary;
+        privateKeys.forEach(function(key) {
+          if(key.id == prefs.data.general.primary_key) primary = key;
+        });
+        console.log('key: ');
+        console.log(primary);
+        var userId = primary.name;
+        console.log('uid: '+userId+"<"+primary.email+">");
+
+        //find user's name and email
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n"+userId+" <"+primary.email+"> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/\n\n-----END PGP PUBLIC KEY REQUEST-----\n\n";
+        //add public key
+        var args = {pub:true, priv:false, all:false};
+        console.log("attempting to key armored key for "+primary.id.toLowerCase());
+        try {
+          var result = model.getArmoredKeys([primary.id.toLowerCase()], args);
+        } catch (e) {
+          console.log('error in viewmodel: ', e);
+        }
+        var publicKey = result[0].armoredPublic;
+//        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
+        console.log("after str replace");
+        var str="";
+        for(var i=0; i<publicKey.length; i++){
+          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
+        }
+        text = encodeURIComponent(text+publicKey);
+        subject = encodeURIComponent("[Ezee] Request for secure communication");
+        to = encodeURIComponent(msg.recipients.join());
+
+        console.log("opening popup...");
+        mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: true}, function(window) {
+          //verifyPopup = window;
+        });
         break;
       default:
         console.log('unknown event', msg);

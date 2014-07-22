@@ -34,6 +34,7 @@ var EncryptFrame = EncryptFrame || (function() {
     this._options = {expanded: false, closeBtn: true};
     this._keyCounter = 0;
     this._sendBtn = null;
+    this._waitingForNewComposer = false;
   };
 
   encryptFrame.prototype = {
@@ -91,12 +92,7 @@ var EncryptFrame = EncryptFrame || (function() {
 		<label class="showText"><input type="checkbox" id="signCheckbox"> Sign this email</label><br> \
 		<label class="showText"><input type="checkbox" id="encryptCheckbox"> Encrypt this email</label> \
                 ';
-// Original mailvelope toolbar buttons; leaving here temporarily for reference
-//                <button id="signBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-sign"></i></button> \
-//                <button id="encryptBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-encrypt"></i></button> \
-//                <button id="undoBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-undo"></i></button> \
-//                <button id="editorBtn" class="m-btn m-encrypt-button" type="button"><i class="m-icon m-icon-editor"></i></button> \
-
+      
       this._eFrame = $('<div/>', {
         id: 'eFrame-' + that.id,
         'class': 'm-encrypt-frame',
@@ -108,6 +104,12 @@ var EncryptFrame = EncryptFrame || (function() {
 
       //this._eFrame.insertAfter(this._editElement);
       this._sendBtn = $(":contains('Send'):last");
+
+      if ($('input[name="subjectbox"]:last').val() == "[Ezee] Request for secure communication") {
+        this._sendBtn.html("Send Key Request");
+        return;
+      }
+
       this._eFrame.insertAfter(this._sendBtn);
       this._sendBtn.html("Send Unencrypted");
 
@@ -496,9 +498,8 @@ var EncryptFrame = EncryptFrame || (function() {
               if (key.proposal) realKeys.push(key);
             });
             
-            //console.log("typed recipients: ", toRecips);
-            //console.log("mailvelope keys: ", realKeys);
-            if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) { // TODO: only -1 if encrypt-to-self is on
+            // TODO: only -1 if encrypt-to-self is on
+            if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) {
               var noKeyFor = [];
               for (var i = 0; i < toRecips.length; i++) {
                 var haveKey = false;
@@ -512,19 +513,11 @@ var EncryptFrame = EncryptFrame || (function() {
                 if (!haveKey) noKeyFor = noKeyFor.concat(toRecips[i]);
               }
               if (confirm("This email cannot be encrypted because you do not have an encryption key for the following recipients:\n\n"+noKeyFor+"\n\nWould you like to send them an email requesting their encryption keys?")) {
-                document.location.href = '#compose';
-                setTimeout(function(){
-                  if ($('textarea[name="to"]:last').val() !== "") {
-                    console.log("non-empty compose window. aborting.");
-                    return;
-                  }
-                  $('textarea[name="to"]:last').val(noKeyFor.join());
-                  $('input[name="subjectbox"]:last').val('[Ezee] Request for secure communication');
-                  that._port.postMessage({
-                    event: 'key-request-text',
-                    sender: 'eFrame-'+that.id,
-                  });
-                }, 1000);
+                that._port.postMessage({
+                  event: 'key-request-init',
+                  sender: 'eFrame-' + that.id,
+                  recipients: noKeyFor
+                });
               }
               $('#encryptCheckbox').attr('checked', false);
               that._sendBtn.html("Send Unencrypted");
@@ -539,9 +532,6 @@ var EncryptFrame = EncryptFrame || (function() {
                 type:'webmail'
               });
             }
-            break;
-          case 'key-request-text':
-            $('div.editable[role="textbox"]:last').html(msg.text);
             break;
           default:
             console.log('unknown event');
