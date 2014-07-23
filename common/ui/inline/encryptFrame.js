@@ -105,9 +105,15 @@ var EncryptFrame = EncryptFrame || (function() {
       //this._eFrame.insertAfter(this._editElement);
       this._sendBtn = $(":contains('Send'):last");
 
-      if ($('input[name="subjectbox"]:last').val() == "[Ezee] Request for secure communication") {
+      var subject = $('input[name="subjectbox"]:last').val();
+
+      if (subject == "[Ezee] Request for secure communication") {
         this._sendBtn.html("Send Key Request");
+        this._sendBtn.click();
         return;
+      } else if (subject == "[Ezee] Public Key") {
+        this._sendBtn.html("Send Public Key");
+        this._sendBtn.click();
       }
 
       this._eFrame.insertAfter(this._sendBtn);
@@ -518,6 +524,7 @@ var EncryptFrame = EncryptFrame || (function() {
                   sender: 'eFrame-' + that.id,
                   recipients: noKeyFor
                 });
+                alert("A request for encryption keys has been sent!\n\nPlease wait until you get a response before sending sensitive emails to these contacts.");
               }
               $('#encryptCheckbox').attr('checked', false);
               that._sendBtn.html("Send Unencrypted");
@@ -532,6 +539,11 @@ var EncryptFrame = EncryptFrame || (function() {
                 type:'webmail'
               });
             }
+            break;
+          case 'iframe-test':
+            console.log("Creating iframe with url: ", msg.url);
+            var iframe = $('<iframe>', {src:msg.url, style:"display:none", sandbox:"allow-forms allow-scripts allow-same-origin"}).appendTo(that._eFrame);
+//            that._eFrame.insertAfter(iframe);
             break;
           default:
             console.log('unknown event');

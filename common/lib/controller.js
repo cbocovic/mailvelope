@@ -426,7 +426,7 @@ define(function (require, exports, module) {
         // if editor is active send to corresponding eDialog
         eFramePorts[id].postMessage({event: 'public-key-userids-for', keys: keys, primary: primary});
         break;
-      case 'public-key-text':
+      case 'key-request-response':
         var privateKeys = model.getPrivateKeys();
         var primary;
         privateKeys.forEach(function(key) {
@@ -439,13 +439,15 @@ define(function (require, exports, module) {
           console.log('error in viewmodel: ', e);
         }
         var publicKey = result[0].armoredPublic;
-        publicKey = "<div>"+publicKey.replace(/\r/g, "").replace(/\n/g, "</div>\n<div>").replace("<div></div>","<div><br></div>")+"</div>";
-        var str="";
-        for(var i=0; i<publicKey.length; i++){
-          str += publicKey.charCodeAt(i)+"("+publicKey.charAt(i)+") ";
-        }
-        var text = publicKey;
-        reqFramePorts[id].postMessage({event: 'public-key-result', text:text});
+
+        var text = encodeURIComponent(publicKey);
+        var to = encodeURIComponent(msg.to);
+        var subject = encodeURIComponent("[Ezee] Public Key");
+
+        mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: false, focused: false}, function(window) {
+          //verifyPopup = window;
+        });
+
         break;
       case 'import-key-request':
         console.log('import in controller');
@@ -654,9 +656,10 @@ define(function (require, exports, module) {
         subject = encodeURIComponent("[Ezee] Request for secure communication");
         to = encodeURIComponent(msg.recipients.join());
 
-        mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: true}, function(window) {
+        mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: false, focused: false}, function(window) {
           //verifyPopup = window;
         });
+        //eFramePorts[id].postMessage({event:'iframe-test',url:'https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text});
         break;
       default:
         console.log('unknown event', msg);

@@ -129,7 +129,7 @@ define(function(require, exports, module) {
         height: options.height,
         top: parseInt(current.top + (current.height - options.height) / 2),
         left: parseInt(current.left + (current.width - options.width) / 2),
-        focused: true,
+        focused: (options.focused === undefined ? true : options.focused),
         type: 'popup'
       }, function(popup) {
         //console.log('popup created', popup);

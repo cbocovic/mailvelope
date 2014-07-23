@@ -33,23 +33,23 @@ var RequestFrame = RequestFrame || (function() {
 
   requestFrame.prototype._clickHandler = function() {
     var that = this;
-    console.log('request frame called:');
     var msg = that._getArmoredMessage();
+    
     //find out who sent it
     var email = msg.match(/<[\s\S]+?>/)[0];
     email = email.replace(/[<|>]/g, "");
-    console.log(email);
 
     //import key
     var pKey = msg.match(/Version[\s\S]+?-----END PGP PUBLIC KEY REQUEST-----/)[0];
     pKey = "-----BEGIN PGP PUBLIC KEY BLOCK-----\n"+pKey.replace("REQUEST", "BLOCK");
-    console.log('pKey:');
-    console.log(pKey);
 
     var keys = [];
 
     keys.push({type: 'public', armored: pKey});
     that._port.postMessage({event: 'import-key-request', sender: 'reqFrame'+that.id, data:keys});
+    that._port.postMessage({event: 'key-request-response', sender: 'reqFrame'+that.id, to:email});
+
+    alert("Congratulations! You can now send encrypted messages to "+email+".\n\nYour key has been sent back to them, so they will be able to respond as well.");
     
     //importKey.importKey(pKey,function(){});
     //that._port.postMessage({
@@ -58,19 +58,19 @@ var RequestFrame = RequestFrame || (function() {
     //  sender: that._ctrlName
     //});
     //reply to request
-    document.location.href = '#compose';
-    setTimeout(function(){
-      if ($('textarea[name="to"]:last').val() !== "") {
-        console.log("non-empty compose window. aborting.");
-        return;
-      }
-      $('textarea[name="to"]:last').val(email);
-      $('input[name="subjectbox"]:last').val('[Ezee] Public Key');
-      that._port.postMessage({
-        event: 'public-key-text',
-        sender: 'reqFrame-'+that.id,
-      });
-    }, 1000);
+    //document.location.href = '#compose';
+    //setTimeout(function(){
+    //  if ($('textarea[name="to"]:last').val() !== "") {
+    //    console.log("non-empty compose window. aborting.");
+    //    return;
+    //  }
+    //  $('textarea[name="to"]:last').val(email);
+    //  $('input[name="subjectbox"]:last').val('[Ezee] Public Key');
+    //  that._port.postMessage({
+    //    event: 'public-key-text',
+    //    sender: 'reqFrame-'+that.id,
+    //  });
+    //}, 1000);
 
     return false;
   };
