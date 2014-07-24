@@ -32,7 +32,16 @@ var DecryptFrame = DecryptFrame || (function() {
 
   decryptFrame.prototype._renderFrame = function() {
     this.parent._renderFrame.call(this);
-    this._eFrame.addClass('m-decrypt');
+    var text = $('<div/>', {
+      'class': 'centered',
+      html: '<h3>Mailvelope Message</h3><br> This is an encrypted message. Click to decrypt and view.'
+    });
+    text.width(this._eFrame.width()*0.5);
+    text.height(this._eFrame.height()*0.5);
+    text.css('marginLeft', -text.width()/2);
+    text.css('marginTop', -text.height()/2);
+    this._eFrame.append(text);
+    //this._eFrame.addClass('m-decrypt');
   };
 
   decryptFrame.prototype._clickHandler = function() {

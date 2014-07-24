@@ -39,7 +39,16 @@ var VerifyFrame = VerifyFrame || (function () {
 
   verifyFrame.prototype._renderFrame = function () {
     this.parent._renderFrame.call(this);
-    this._eFrame.addClass('m-verify');
+    var text = $('<div/>', {
+      'class': 'centered',
+      html: '<h3>Mailvelope Signed Message</h3><br> This message has been signed. Click to verify the signature.'
+    });
+    text.width(this._eFrame.width()*0.5);
+    text.height(this._eFrame.height()*0.5);
+    text.css('marginLeft', -text.width()/2);
+    text.css('marginTop', -text.height()/2);
+    this._eFrame.append(text);
+    //this._eFrame.addClass('m-verify');
     this._eFrame.removeClass('m-large');
   };
 

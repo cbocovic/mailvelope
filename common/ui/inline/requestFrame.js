@@ -28,7 +28,16 @@ var RequestFrame = RequestFrame || (function() {
 
   requestFrame.prototype._renderFrame = function() {
     this.parent._renderFrame.call(this);
-    this._eFrame.addClass('m-request');
+    var text = $('<div/>', {
+      'class': 'centered',
+      html: '<h3>Mailvelope Request</h3><br> This contact wants to communicate with you securely. Click to accept this request.'
+    });
+    text.width(this._eFrame.width()*0.5);
+    text.height(this._eFrame.height()*0.5);
+    text.css('marginLeft', -text.width()/2);
+    text.css('marginTop', -text.height()/2);
+    this._eFrame.append(text);
+    //this._eFrame.addClass('m-request');
   };
 
   requestFrame.prototype._clickHandler = function() {
@@ -79,7 +88,7 @@ var RequestFrame = RequestFrame || (function() {
     this.parent._registerEventListener.call(this);
     var that = this;
     this._port.onMessage.addListener(function(msg) {
-      console.log('received message'+ msg.event);
+      //console.log('received message'+ msg.event);
       switch (msg.event) {
         case 'public-key-result':
           $('div.editable[role="textbox"]:last').html(msg.text);

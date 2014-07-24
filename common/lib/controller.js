@@ -442,7 +442,7 @@ define(function (require, exports, module) {
 
         var text = encodeURIComponent(publicKey);
         var to = encodeURIComponent(msg.to);
-        var subject = encodeURIComponent("[Ezee] Public Key");
+        var subject = encodeURIComponent("[Mailvelope] Public Key");
 
         mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: false, focused: false}, function(window) {
           //verifyPopup = window;
@@ -636,7 +636,7 @@ define(function (require, exports, module) {
         //console.log('uid: '+userId+"<"+primary.email+">");
 
         //find user's name and email
-        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n"+userId+" <"+primary.email+"> has requested to communicate with you securely. To get Easy, Encrypted Email, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/";
+        text = "-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n"+userId+" <"+primary.email+"> wants to communicate with you securely. To get Mailvelope, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/";
         //add public key
         var args = {pub:true, priv:false, all:false};
         //console.log("attempting to key armored key for "+primary.id.toLowerCase());
@@ -653,7 +653,7 @@ define(function (require, exports, module) {
         text = text+publicKey;
         text = text+"\n\n-----END PGP PUBLIC KEY REQUEST-----\n\n";
         text = encodeURIComponent(text);
-        subject = encodeURIComponent("[Ezee] Request for secure communication");
+        subject = encodeURIComponent("[Mailvelope] Request for secure communication");
         to = encodeURIComponent(msg.recipients.join());
 
         mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: false, focused: false}, function(window) {

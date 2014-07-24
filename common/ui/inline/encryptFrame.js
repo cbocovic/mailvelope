@@ -107,11 +107,11 @@ var EncryptFrame = EncryptFrame || (function() {
 
       var subject = $('input[name="subjectbox"]:last').val();
 
-      if (subject == "[Ezee] Request for secure communication") {
+      if (subject == "[Mailvelope] Request for secure communication") {
         this._sendBtn.html("Send Key Request");
         this._sendBtn.click();
         return;
-      } else if (subject == "[Ezee] Public Key") {
+      } else if (subject == "[Mailvelope] Public Key") {
         this._sendBtn.html("Send Public Key");
         this._sendBtn.click();
       }

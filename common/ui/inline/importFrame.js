@@ -28,18 +28,33 @@ var ImportFrame = ImportFrame || (function() {
 
   importFrame.prototype._renderFrame = function() {
     this.parent._renderFrame.call(this);
-    this._eFrame.addClass('m-import');
+    var text = $('<div/>', {
+      'class': 'centered',
+      html: '<h3>Mailvelope Key</h3><br> Click to communicate securely with this contact.'
+    });
+    text.width(this._eFrame.width()*0.5);
+    text.height(this._eFrame.height()*0.5);
+    text.css('marginLeft', -text.width()/2);
+    text.css('marginTop', -text.height()/2);
+    this._eFrame.append(text);
   };
 
   importFrame.prototype._clickHandler = function() {
-    var that = this;
-    this.parent._clickHandler.call(this, function() {
-      that._port.postMessage({
-        event: 'imframe-armored-key',
-        data: that._getArmoredMessage(),
-        sender: that._ctrlName
-      });
-    });
+    //var that = this;
+    var keys = [];
+    var pKey = this._getArmoredMessage();
+
+    keys.push({type: 'public', armored: pKey});
+    this._port.postMessage({event: 'import-key-request', sender: 'imFrame'+this.id, data:keys});
+    alert("Congratulations! You can now send encrypted messages to this contact.");
+    
+    //this.parent._clickHandler.call(this, function() {
+    //  that._port.postMessage({
+    //    event: 'imframe-armored-key',
+    //    data: that._getArmoredMessage(),
+    //    sender: that._ctrlName
+    //  });
+    //});
     return false;
   };
 
