@@ -135,6 +135,15 @@
     mvelo.extension.sendMessage({ event: 'set-prefs', message: {data: update} }, function() {
       //normalize();
     });
+    //reload gmail tab
+    chrome.tabs.query({
+      url: "https://mail.google.com/*"
+    }, function(tabs) {
+      tabs.forEach(function(tab){
+        chrome.tabs.update(tab.id, {active:true});
+        chrome.tabs.reload(tab.id);
+      });
+    });
   }
     
 
