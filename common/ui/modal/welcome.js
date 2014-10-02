@@ -12,6 +12,8 @@
   //port to communicate with background page
   var port;
 
+  var advShown = false;
+
   function init() {
     var qs = jQuery.parseQuerystring();
     parentID = qs.parent;
@@ -21,11 +23,12 @@
     port.onMessage.addListener(messageListener);
     //port.postMessage({event: 'welcome-popup-init', sender: 'welcome'+id});
 
-    $('#advancedBtn').click(onAdvanced);
+    //$('#advancedBtn').click(onAdvanced);
     $('#getStartedBtn').click(onGetStarted);
     $('#genKeySubmit').click(onGenerateKey);
     $('#genKeyClear').click(onClear);
     $('#finishBtn').click(onFinish);
+    $('#genKeyAdv').click(onKeyAdvanced);
 
     $('#infoForm').hide();
     $('#finalBtns').hide();
@@ -39,10 +42,23 @@
     $('#infoForm').show();
   }
 
-  function onAdvanced() {
-  //send user to mailvelope generate key page
-    port.postMessage({event: 'options-page', sender: name});
+  function onKeyAdvanced() {
+    if (advShown) {
+      $('#genKeyAdvSection').slideUp();
+      $('#genKeyAdv').text('Advanced >>');
+      advShown = false;
+    } else {
+      $('#genKeyAdvSection').slideDown();
+      $('#genKeyAdv').text('<< Advanced');
+      advShown = true;
+    }
+    return false;
   }
+
+  //function onAdvanced() {
+  //send user to mailvelope generate key page
+  //  port.postMessage({event: 'options-page', sender: name});
+  //}
 
   function onGenerateKey() {
     validateEmail();

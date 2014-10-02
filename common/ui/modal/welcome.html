@@ -46,6 +46,45 @@
             </div>
           </div>
           <div class="control-group">
+            <div class="controls">
+              <button id="genKeyAdv" class="btn">Advanced >></button>
+            </div>
+          </div>
+          <div id="genKeyAdvSection" class="alert alert-info hide">
+            <div class="control-group">
+              <label class="control-label">Algorithm</label>
+              <div class="controls">
+                <select id="genKeyAlgo" class="input-medium" disabled>
+                  <option selected>RSA/RSA</option>
+                  <option>DSA/ElGamal</option>
+                </select>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Key size</label>
+              <div class="controls">
+                <select id="genKeySize" class="input-medium">
+                  <option>1024</option>
+                  <option selected>2048</option>
+                  <option>4096</option>
+                </select>
+                <span class="help-inline">bits</span>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Expiration</label>
+              <div class="controls">
+                <input type="text" class="input-small" id="genKeyExp" value="0" disabled>
+                <select id="genKeyExpUnit" class="input-small" disabled>
+                  <option>never</option>
+                  <option>days</option>
+                  <option>months</option>
+                  <option>years</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="control-group">
             <div id="genAlert">
             </div>
           </div>
@@ -70,7 +109,7 @@
       </div>
     </div>
     <div id="initialBtns" class="modal-footer">
-      <button id="advancedBtn" class="btn">Advanced Options</button>
+      <!---<button id="advancedBtn" class="btn">Advanced Options</button>-->
       <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
     </div>
     <div id="finalBtns" class="modal-footer">

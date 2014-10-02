@@ -41,7 +41,7 @@
   bottom: 58px;
   right: 0;
   left: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .m-modal > .modal-footer {
