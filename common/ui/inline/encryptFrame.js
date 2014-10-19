@@ -88,10 +88,8 @@ var EncryptFrame = EncryptFrame || (function() {
         toolbar = toolbar + '<span class="m-frame-fill-right"></span>';
       }
       /* jshint multistr: true */
-      toolbar = toolbar + '\
-		<label class="showText"><input type="checkbox" id="signCheckbox"> Sign this email</label><br> \
-		<label class="showText"><input type="checkbox" id="encryptCheckbox"> Encrypt this email</label> \
-                ';
+       // <label class="showText"><input type="checkbox" id="signCheckbox"> Womp this email</label><br> \
+      toolbar = toolbar + '<label class="showText"><input type="checkbox" id="encryptCheckbox"> Encrypt this email</label>';
       
       this._eFrame = $('<div/>', {
         id: 'eFrame-' + that.id,
@@ -207,10 +205,10 @@ var EncryptFrame = EncryptFrame || (function() {
       this._setFrameDim();
     },
 
-    _onSignButton: function() {
+    /*_onSignButton: function() {
       this.showSignDialog();
       return false;
-    },
+    },*/
 
     _onEncryptButton: function() {
       this.showEncryptDialog();
@@ -229,9 +227,10 @@ var EncryptFrame = EncryptFrame || (function() {
       return false;
     },
 
+    /*
     showSignDialog: function() {
       this._expandFrame(this._showDialog.bind(this, 'sign'));
-    },
+    },*/
 
     showEncryptDialog: function() {
       this._expandFrame(this._showDialog.bind(this, 'encrypt'));
@@ -488,6 +487,8 @@ var EncryptFrame = EncryptFrame || (function() {
             that._saveEmailText();
             that._removeDialog();
             that._setMessage(msg.message, 'text');
+            //make the text uneditable TODO: doesn't work :(
+            that._emailTextElement.disabled=true;
             break;
           case 'set-editor-output':
             that._saveEmailText();
