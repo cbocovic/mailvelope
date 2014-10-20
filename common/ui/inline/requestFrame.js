@@ -45,7 +45,13 @@ var RequestFrame = RequestFrame || (function() {
     var msg = that._getArmoredMessage();
     
     //find out who sent it
-    var email = msg.match(/<[\s\S]+?>/)[0];
+    var email = this._pgpElement;
+    var sender = new RegExp(/<[\s\S]+?>/);
+    while (!sender.test(email.text()) || email.width() <= 0) {
+      email = email.parent();
+    }
+    email = email.text();
+    email = email.match(/<[\s\S]+?>/)[0];
     email = email.replace(/[<|>]/g, "");
 
     //import key
