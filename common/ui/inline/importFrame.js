@@ -47,6 +47,7 @@ var ImportFrame = ImportFrame || (function() {
     keys.push({type: 'public', armored: pKey});
     this._port.postMessage({event: 'import-key-request', sender: 'imFrame'+this.id, data:keys});
     alert("Congratulations! You can now send encrypted messages to this contact.");
+
     
     //this.parent._clickHandler.call(this, function() {
     //  that._port.postMessage({

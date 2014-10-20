@@ -447,11 +447,27 @@ define(function (require, exports, module) {
         mvelo.windows.openPopup('https://mail.google.com/mail/?view=cm&fs=1&to='+to+'&su='+subject+'&body='+text, {width: 742, height: 450, modal: false, focused: false}, function(window) {
           //verifyPopup = window;
         });
+        chrome.tabs.query({
+          url: "https://mail.google.com/*"
+        }, function(tabs) {
+          tabs.forEach(function(tab){
+            chrome.tabs.update(tab.id, {active:true});
+            chrome.tabs.reload(tab.id);
+          });
+        });
 
         break;
       case 'import-key-request':
         console.log('import in controller');
         model.importKeys(msg.data);
+        chrome.tabs.query({
+          url: "https://mail.google.com/*"
+        }, function(tabs) {
+          tabs.forEach(function(tab){
+            chrome.tabs.update(tab.id, {active:true});
+            chrome.tabs.reload(tab.id);
+          });
+        });
         break;
       case 'encrypt-dialog-ok':
         // add recipients to buffer
