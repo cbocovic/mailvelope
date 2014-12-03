@@ -280,6 +280,8 @@ define(function(require, exports, module) {
     return result;
   }
 
+  exports.importPublicKey = importPublicKey;
+
   function importPrivateKey(armored) {
     var result = [];
     var imported = openpgp.key.readArmored(armored);
