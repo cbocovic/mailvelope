@@ -14,7 +14,7 @@ define(function (require, exports, module) {
     if (!prefs || !prefs.general || !prefs.general.primary_key) {
      // First time being run --- show welcome popup
       console.log("opening popup...");
-      mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + name, {width: 742, height: 650, modal: true}, function(window) {
+      mvelo.windows.openPopup('common/ui/modal/welcome.html?id=' + name, {width: 742, height: 450}, function(window) {
         windowPopup = window;
       });
       //alert('Welcome to mailvelope!');
