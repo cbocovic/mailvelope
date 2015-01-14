@@ -47,8 +47,13 @@
 .m-modal > .modal-footer {
   position: absolute;
   bottom: 0;
-  right: 0;
+/*  right: 0; */
+  text-align:left;
   left: 0;
+}
+
+.modal-footer {
+  text-align:left;
 }
 
 .span1 {

@@ -103,6 +103,9 @@ var EncryptFrame = EncryptFrame || (function() {
       //this._eFrame.insertAfter(this._editElement);
       this._sendBtn = $(":contains('Send'):last");
 
+      // prevent horizontal scrollbar when chrome window is too small
+      this._sendBtn.parent().parentsUntil('div').parent().css('overflow', 'hidden');
+
       var subject = $('input[name="subjectbox"]:last').val();
 
       if (subject == "[Mailvelope] Request for secure communication") {
@@ -149,6 +152,9 @@ var EncryptFrame = EncryptFrame || (function() {
         {onUnchecked:onAnyUnchecked},
         function(event) {
           if ($(this).is(':checked')) {
+            // blur to: field
+            that._eFrame.find('#gbqfq').focus();
+
             that._port.postMessage({
               event: 'request-public-keys-for',
               sender: 'eFrame-' + that.id,
@@ -384,7 +390,7 @@ var EncryptFrame = EncryptFrame || (function() {
     _getEmailRecipient: function() {
       var emails = [];
       var emailRegex = /^\s*[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\s*$/g;
-      $('span').filter(':visible').each(function() {
+      $('span, div.xi').filter(':visible').each(function() {
         var valid = $(this).text().match(emailRegex);
         if (valid !== null) {
           // second filtering: only direct text nodes of span elements
@@ -519,13 +525,13 @@ var EncryptFrame = EncryptFrame || (function() {
                 }
                 if (!haveKey) noKeyFor = noKeyFor.concat(toRecips[i]);
               }
-              if (confirm("This email cannot be encrypted because you do not have an encryption key for the following recipients:\n\n"+noKeyFor+"\n\nWould you like to send them an email requesting their encryption keys?")) {
+              if (confirm("This email cannot be encrypted because the following people are not using Mailvelope:\n\n"+noKeyFor+"\n\nWould you like to send them an email inviting them to use Mailvelope?")) {
                 that._port.postMessage({
                   event: 'key-request-init',
                   sender: 'eFrame-' + that.id,
                   recipients: noKeyFor
                 });
-                alert("A request for encryption keys has been sent!\n\nPlease wait until you get a response before sending sensitive emails to these contacts.");
+                alert("An invitation to join Mailvelope has been sent!\n\nPlease wait until you get a response before sending sensitive emails to these contacts.");
               }
               $('#encryptCheckbox').attr('checked', false);
               that._sendBtn.html("Send Unencrypted");
