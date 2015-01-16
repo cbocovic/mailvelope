@@ -14,7 +14,7 @@
   background-position: center center, center center;
   background-image: none, none;
   transition: background-position 0.5s ease, background-image 0.5s ease;
-  background-color: rgba(254,251,243,1);
+  background-color: rgba(254,251,243,1); /*version 1*/
   background-repeat: no-repeat;
   border: 1px solid rgba(0,0,0,.2);
   border-radius: 3px;
