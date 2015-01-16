@@ -667,7 +667,7 @@ define(function (require, exports, module) {
         //console.log('uid: '+userId+"<"+primary.email+">");
 
         //find user's name and email
-        text = userId+" <"+primary.email+"> wants to communicate with you securely. To get Mailvelope, please follow the link below:\nhttps://cs.uwaterloo.ca/~cbocovic/cs889/\n";//\n\n"+"-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n";
+        text = userId+" has requested you install Mailvelope to communicate securely.  Mailvelope is a Chrome browser extension for securing your Gmail messages.\n\nTo get Mailvelope, please follow the link below:\n\nhttps://erinn.io:407/~erinn/get-mailvelope/\n";//\n\n"+"-----BEGIN PGP PUBLIC KEY REQUEST-----\n\n";
         //add public key
         //var args = {pub:true, priv:false, all:false};
         //console.log("attempting to key armored key for "+primary.id.toLowerCase());

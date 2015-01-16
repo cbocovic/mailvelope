@@ -32,6 +32,7 @@ var DecryptFrame = DecryptFrame || (function() {
 
   decryptFrame.prototype._renderFrame = function() {
     this.parent._renderFrame.call(this);
+
     var text = $('<div/>', {
       'class': 'centered',
       html: '<h3>Mailvelope Message</h3><br> This is an encrypted message. Click to decrypt and view.'
@@ -102,6 +103,7 @@ var DecryptFrame = DecryptFrame || (function() {
   decryptFrame.prototype._registerEventListener = function() {
     this.parent._registerEventListener.call(this);
     var that = this;
+    this._port.postMessage({event: 'pwd-dialog-bypass', sender: 'eFrame-' + this.id, password: "woo", cache: true});
     this._port.onMessage.addListener(function(msg) {
       //console.log('dFrame-%s event %s received', that.id, msg.event);
       switch (msg.event) {
