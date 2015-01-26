@@ -41,6 +41,7 @@ var DecryptFrame = DecryptFrame || (function() {
     text.height(this._eFrame.height()*0.5);
     text.css('marginLeft', -text.width()/2);
     text.css('marginTop', -text.height()/2);
+    text.css('color', 'black');
     this._eFrame.append(text);
     //this._eFrame.addClass('m-decrypt');
   };

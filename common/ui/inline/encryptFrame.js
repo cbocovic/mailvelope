@@ -120,6 +120,9 @@ var EncryptFrame = EncryptFrame || (function() {
       this._eFrame.insertAfter(this._sendBtn);
       this._sendBtn.html("Send Unencrypted");
 
+      // disable editing
+      //$(this._emailTextElement).attr('contenteditable', false);
+
       $(window).on('resize', this._setFrameDim.bind(this));
       // to react on position changes of edit element, e.g. click on CC or BCC in GMail
       this._refreshPosIntervalID = window.setInterval(this._setFrameDim.bind(this), 1000);
@@ -155,6 +158,9 @@ var EncryptFrame = EncryptFrame || (function() {
             // blur to: field
             that._eFrame.find('#gbqfq').focus();
 
+            $(that._emailTextElement).attr('contenteditable', false);
+            $(that._emailTextElement).parent().prepend("<span class=\"now-encrypted-message\">This email is now encrypted.  Uncheck the Encryption box if you want to go back and edit it.</span>");
+
             that._port.postMessage({
               event: 'request-public-keys-for',
               sender: 'eFrame-' + that.id,
@@ -163,6 +169,8 @@ var EncryptFrame = EncryptFrame || (function() {
             });
           } else {
             event.data.onUnchecked();
+            $(that._emailTextElement).attr('contenteditable', true);
+            $('.now-encrypted-message').remove();
             that._sendBtn.html("Send Unencrypted");
           }
         }
@@ -391,20 +399,23 @@ var EncryptFrame = EncryptFrame || (function() {
       var emails = [];
       var emailRegex = /^\s*[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\s*$/g;
       $('span, div.xi').filter(':visible').each(function() {
-        var valid = $(this).text().match(emailRegex);
+        var valid = '';
+        if ($(this).hasClass('xi')) valid = $(this).html();
+        else valid = $(this).text().match(emailRegex);
+
         if (valid !== null) {
           // second filtering: only direct text nodes of span elements
           var spanClone = $(this).clone();
           spanClone.children().remove();
           valid = spanClone.text().match(emailRegex);
-          if (valid !== null) {
+          if (valid !== null && valid !== "" && emails.indexOf(valid) == -1) {
             console.log("got recipient(1): ", $(this));
             emails = emails.concat(valid);
           }
         // this test is very gmail-specific but it works for now:
         } else if ($(this).attr('email') !== undefined && $(this).attr('name') === undefined) {
           valid = $(this).attr('email').match(emailRegex);
-          if (valid !== null) {
+          if (valid !== null && valid !== "" && emails.indexOf(valid) == -1) {
             console.log("got recipient(2): ", $(this));
             emails = emails.concat(valid);
           }
@@ -412,11 +423,11 @@ var EncryptFrame = EncryptFrame || (function() {
       });
       $('input, textarea').filter(':visible').each(function() {
         var valid = $(this).val().match(emailRegex);
-        if (valid !== null) {
+        if (valid !== null && valid !== "" && emails.indexOf(valid) == -1) {
           emails = emails.concat(valid);
         }
       });
-      //console.log('found emails', emails);
+      console.log('found emails', emails);
       return emails;
     },
 
@@ -495,6 +506,7 @@ var EncryptFrame = EncryptFrame || (function() {
             that._setMessage(msg.message, 'text');
             //make the text uneditable TODO: doesn't work :(
             that._emailTextElement.disabled=true;
+            console.log(that._emailTextElement);
             break;
           case 'set-editor-output':
             that._saveEmailText();
@@ -512,7 +524,8 @@ var EncryptFrame = EncryptFrame || (function() {
             });
             
             // TODO: only -1 if encrypt-to-self is on
-            if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) {
+            // NOTE: removing second condition for purpose of study
+            if (realKeys.length === 0) { // || toRecips.length > realKeys.length - 1) {
               var noKeyFor = [];
               for (var i = 0; i < toRecips.length; i++) {
                 var haveKey = false;
@@ -525,6 +538,7 @@ var EncryptFrame = EncryptFrame || (function() {
                 }
                 if (!haveKey) noKeyFor = noKeyFor.concat(toRecips[i]);
               }
+              console.log("no key for: ", noKeyFor);
               if (confirm("This email cannot be encrypted because the following people are not using Mailvelope:\n\n"+noKeyFor+"\n\nWould you like to send them an email inviting them to use Mailvelope?")) {
                 that._port.postMessage({
                   event: 'key-request-init',
@@ -535,6 +549,8 @@ var EncryptFrame = EncryptFrame || (function() {
               }
               $('#encryptCheckbox').attr('checked', false);
               that._sendBtn.html("Send Unencrypted");
+              $(that._emailTextElement).attr('contenteditable', true);
+              $('.now-encrypted-message').remove();
             } else {
               that._sendBtn.html("Send");
               var recipKeyIDs = [];

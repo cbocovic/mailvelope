@@ -18,7 +18,7 @@
 (function() {
   if (document.mveloControl) return;
 
-  var interval = 2500; // ms
+  var interval = 1500; // ms
   var intervalID = 0;
   var regex = /END\sPGP/;
   var minEditHeight = 84;
@@ -62,6 +62,10 @@
     if (editable.length !== 0) {
       attachEncryptFrame(editable);
     }
+
+    console.log('showing any remaining text');
+    $('.ii').delay(600).queue(function(next){  $(this).css('color', 'black');next();  });
+    $('.ii a, .ii a[href], .ii a[href]:visited').delay(600).queue(function(next){  $(this).css('color', '#15c');next();  });
   }
 
   /**
