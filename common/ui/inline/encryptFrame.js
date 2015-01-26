@@ -520,12 +520,15 @@ var EncryptFrame = EncryptFrame || (function() {
             var toRecips = that._getEmailRecipient();
             var realKeys = [];
             msg.keys.forEach(function(key){
-              if (key.proposal) realKeys.push(key);
+              if (key.proposal){
+                realKeys.push(key);
+                console.log("found key: ", key);
+              }
             });
             
             // TODO: only -1 if encrypt-to-self is on
             // NOTE: removing second condition for purpose of study
-            if (realKeys.length === 0) { // || toRecips.length > realKeys.length - 1) {
+            if (realKeys.length === 0 || toRecips.length > realKeys.length - 1) {
               var noKeyFor = [];
               for (var i = 0; i < toRecips.length; i++) {
                 var haveKey = false;
