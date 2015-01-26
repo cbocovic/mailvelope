@@ -35,8 +35,10 @@ var DecryptFrame = DecryptFrame || (function() {
 
     var text = $('<div/>', {
       'class': 'centered',
-      html: '<h3>Mailvelope Message</h3><br> This is an encrypted message. Click to decrypt and view.'
+      html: '<table class="decryptframe-table"><tr><td rowspan="2" style="width:96px"><div class="lock-icon"></div></td><td><h3>Mailvelope Message</h3></td></tr><tr><td>This is an encrypted message. Click to decrypt and view.</td></tr></table>'
     });
+//    console.log("eframe width: "+this._eFrame.width());
+//    console.log("times .5: " + (this._eFrame.width()*0.5));
     text.width(this._eFrame.width()*0.5);
     text.height(this._eFrame.height()*0.5);
     text.css('marginLeft', -text.width()/2);

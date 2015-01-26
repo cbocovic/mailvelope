@@ -63,7 +63,6 @@
       attachEncryptFrame(editable);
     }
 
-    console.log('showing any remaining text');
     $('.ii').delay(600).queue(function(next){  $(this).css('color', 'black');next();  });
     $('.ii a, .ii a[href], .ii a[href]:visited').delay(600).queue(function(next){  $(this).css('color', '#15c');next();  });
   }

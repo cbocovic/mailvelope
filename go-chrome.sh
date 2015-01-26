@@ -20,7 +20,7 @@ unzip mailvelope.chrome.zip
 mv chrome chrome1
 cd ..
 
-sed -i 's|background-color: rgba(254,251,243,1); /\*version 1\*/|background-color: rgba(254,251,243,.7); /*version 1*/|g' common/ui/inline/framestyles.css
+sed -i 's|background-color: rgba(254,251,243,1); /\*version 1\*/|background-color: rgba(254,251,243,.5); /*version 1*/|g' common/ui/inline/framestyles.css
 
 npm install && bower install && grunt
 
@@ -42,4 +42,4 @@ unzip mailvelope.chrome.zip
 mv chrome chrome2
 
 cd ..
-sed -i 's|background-color: rgba(254,251,243,.7); /\*version 1\*/|background-color: rgba(254,251,243,1); /*version 1*/|g' common/ui/inline/framestyles.css
+sed -i 's|background-color: rgba(254,251,243,.5); /\*version 1\*/|background-color: rgba(254,251,243,1); /*version 1*/|g' common/ui/inline/framestyles.css

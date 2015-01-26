@@ -288,3 +288,24 @@
   -moz-box-shadow: none;
   box-shadow: none;
 }
+
+:root .lock-icon {
+  background-image: url('../../img/mail_locked_96.png'), none;
+  width:96px;
+  height:96px;
+}
+
+:root .decryptframe-table {
+  border-collapse: collapse;
+}
+
+:root .decryptframe-table td {
+  background-color:white;
+  border: solid 1px #AAA;
+}
+
+:root .decryptframe-table h3 {
+  margin-top:0px;
+  margin-bottom:0px;
+}
+
